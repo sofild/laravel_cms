@@ -15,8 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('index', 'Manage\IndexController@index');
+Route::get('manage', 'Manage\IndexController@index');
 
-Route::get('cate', 'Manage\CateController@index');
-Route::get('cate/add/{id?}', 'Manage\CateController@add');
-Route::get('cate/test', 'Manage\CateController@test');
+Route::get('manage/news', 'Manage\NewsController@index');
+Route::get('manage/news/add/{id?}', 'Manage\NewsController@add');
+Route::get('manage/news/data', 'Manage\NewsController@data');
+
+Route::get('manage/cate', 'Manage\CateController@index');
+Route::get('manage/cate/add/{id?}', 'Manage\CateController@add');
+Route::get('manage/cate/test', 'Manage\CateController@test');

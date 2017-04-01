@@ -18,22 +18,37 @@ class CateController extends Controller
 
     //编辑
     public function add(){
+        if(!empty($_POST)){
+            $this->_doAdd();
+            return;
+        }
         $cateModel = new Cate();
-        $cate = $cateModel->getCate();
+        $id = request("id", 0);
         $data = array();
+        if($id > 0){
+            $cateInfo = $cateModel->getOne($id);
+            $data["cateInfo"] = $cateInfo;
+        }
+        $cate = $cateModel->getCate();
         $data["cate"] = $cate;
         return view("manage/cate/add",array("data"=>$data));
     }
 
-    public function test(){
-        //$models = new Models("cate", array());
-        //var_dump($models->getTable());
+    public function _doAdd(){
+        $name = request("name","");
+        $parent_id = request("parent_id", 0);
+        $id = request("id", 0);
+        if($name==""){
+            back();
+            return false;
+        }
         $cateModel = new Cate();
-        //$data = array('name'=>'火龙果');
-        //$where = array('id' => 30);
-        //$r = $cateModel->add(1,"火龙果");
-        //$r = $cateModel->upData(array("name"=>"柠檬"),32);
-        $r = $cateModel->getOne(32);
-        var_dump($r);
+        $r = $cateModel->saveCate($id, $parent_id, $name);
+        if($r){
+            redirect("/manage/cate/index");
+        }
+        else{
+            back();
+        }
     }
 }

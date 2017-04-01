@@ -18,11 +18,11 @@
 					<div class="panel-heading">文章编辑</div>
 					<div class="panel-body">
 						<div class="col-md-12">
-							<form role="form" name="form1" id="form1" enctype="multipart/form-data" method="post" action="/articles/doadd">
+							<form role="form" name="form1" id="form1" enctype="multipart/form-data" method="post" action="/manage/news/add">
 							
 								<div class="form-group">
 									<label>标题</label>
-									<input name="title" id="title" class="form-control" placeholder="" value="{{.Article.title}}">
+									<input name="title" id="title" class="form-control" placeholder="" value="{{ $data["info"]["title"] }}">
 								</div>
 																
 								<div class="form-group">
@@ -33,33 +33,32 @@
 								
 								<div class="form-group">
 									<label>描述</label>
-									<textarea class="form-control" rows="3" name="description" id="description">{{.Article.description}}</textarea>
+									<textarea class="form-control" rows="3" name="description" id="description">{{ $data["info"]["description"] }}</textarea>
 								</div>
 
 								<div class="form-group">
 									<label>分类</label>
-									{{$cateId := .Article.cate_id}}
-									<select class="form-control" name="cate_id" data="{{$cateId}}">
-									{{range $index,$value := .Cates}}
-									{{$cid := $value.id}}
-										<option value="{{$value.id}}">{{$value.name}}</option>
-									{{end}}	
+									<select class="form-control" name="cate_id">
+										<option value="0">请选择</option>
+										@foreach ($data["cate"] as $k =>$v)
+											<option value="{{ $v['id'] }}" @if($v['id']==$data['info']['cate_id']) selected @endif>{{ $v["name"] }}</option>
+											@if (!empty($v['child']))
+												@foreach ($v["child"] as $ck =>$cv)
+													<option value="{{ $cv['id'] }}" @if($cv['id']==$data['info']['cate_id']) selected @endif>|-{{ $cv["name"] }}</option>
+													@if (!empty($cv['child']))
+														@foreach ($cv["child"] as $cck =>$ccv)
+															<option value="{{ $ccv['id'] }}" @if($ccv['id']==$data['info']['cate_id']) selected @endif>|---{{ $ccv["name"] }}</option>
+														@endforeach
+													@endif
+												@endforeach
+											@endif
+										@endforeach
 									</select>
-								</div>
-
-								<div class="form-group">
-									<label>作者</label>
-									<input name="author" id="author" class="form-control" placeholder="" value="{{.Content.author}}">
-								</div>
-
-								<div class="form-group">
-									<label>来源</label>
-									<input name="source" id="source" class="form-control" placeholder="" value="{{.Content.source}}">
 								</div>
 
 								<div class="form-group" style="height: 600px;">
 									<label>内容</label>
-									<textarea name="content" id="content" style="height:450px;">{{.Content.content}}</textarea>
+									<textarea name="content" id="content" style="height:450px;">{{ $data["info"]["content"] }}</textarea>
 								</div>
 
 								<div class="form-group">

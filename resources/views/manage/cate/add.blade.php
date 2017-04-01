@@ -18,25 +18,25 @@
                 <div class="panel-heading">分类编辑</div>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <form role="form" name="form1" id="form1" enctype="multipart/form-data" method="post" action="/cate/add">
+                        <form role="form" name="form1" id="form1" method="post" action="/manage/cate/add">
 
                             <div class="form-group">
                                 <label>名称</label>
-                                <input name="name" id="name" class="form-control" placeholder="" value="">
+                                <input name="name" id="name" class="form-control" placeholder="" value="{{ $data['cateInfo']['name'] }}">
                             </div>
 
                             <div class="form-group">
                                 <label>父级分类</label>
-                                <select class="form-control" name="cate_id">
+                                <select class="form-control" name="parent_id">
                                     <option value="0">请选择</option>
                                     @foreach ($data["cate"] as $k =>$v)
-                                        <option value="{{ $v['id'] }}">{{ $v["name"] }}</option>
+                                        <option value="{{ $v['id'] }}" @if($v['id']==$data['cateInfo']['id']) selected @endif>{{ $v["name"] }}</option>
                                         @if (!empty($v['child']))
                                             @foreach ($v["child"] as $ck =>$cv)
-                                                <option value="{{ $cv['id'] }}">|-{{ $cv["name"] }}</option>
+                                                <option value="{{ $cv['id'] }}" @if($cv['id']==$data['cateInfo']['id']) selected @endif>|-{{ $cv["name"] }}</option>
                                                 @if (!empty($cv['child']))
                                                     @foreach ($cv["child"] as $cck =>$ccv)
-                                                        <option value="{{ $ccv['id'] }}">|---{{ $ccv["name"] }}</option>
+                                                        <option value="{{ $ccv['id'] }}" @if($ccv['id']==$data['cateInfo']['id']) selected @endif>|---{{ $ccv["name"] }}</option>
                                                     @endforeach
                                                 @endif
                                             @endforeach

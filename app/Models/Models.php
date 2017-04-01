@@ -53,37 +53,13 @@ class Models extends Model
             $cateModel->limit($limit[1]);
         }
         $result = $cateModel->get();
-        $data_s = array();
-        foreach($result as $k=>$v){
-            $data_s[] = $v->attributes;
-        }
-        return $data_s;
-    }
-
-    /*
-     * 递归获取分类及子分类信息
-     * @param int $pCateId
-     * @param array
-     */
-    public function getCate($pCateId=0){
-        $where = array("parent_id = ".$pCateId."");
-        $cate_data = $this->getList($where, array("id", "asc"));
-        if(!empty($cate_data)){
-            foreach($cate_data as $k=>$v){
-                $cate_data[$k]["child"] = $this->getCate($v["id"]);
-            }
-        }
-        return $cate_data;
+        return $this->formatResult($result);
     }
 
     /*
      * 新增
      */
-    public function add($parentId, $name){
-        $data = array();
-        $data["parent_id"] = $parentId;
-        $data["name"] = $name;
-        $data["addtime"] = time();
+    public function add($data){
         $this->fillable = array_keys($data);
         $this->exists = false;
         $this->timestamps = false;
@@ -103,7 +79,7 @@ class Models extends Model
      * @return bool
      * @usage：upData(array('name'=>'橘子'),22);
      */
-    public function upData($data,$id){
+    public function up($data,$id){
         $this->timestamps = false;
         $old = $this->getOne($id);
         if(empty($old)){
@@ -133,5 +109,19 @@ class Models extends Model
         $this->exists = true;
         $this->attributes = $data;
         return $this->delete();
+    }
+
+
+    /*
+     * 格式化结果
+     * @param array $result
+     * @return array
+     */
+    public function formatResult($result){
+        $data_s = array();
+        foreach($result as $k=>$v){
+            $data_s[] = $v->attributes;
+        }
+        return $data_s;
     }
 }
