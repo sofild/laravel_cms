@@ -9,10 +9,24 @@ use App\Models\Cate;
 
 class NewsController extends Controller
 {
+    private $uid;
+    private $username;
+    private $assignData;
+    public function __construct(){
+        $uid = session("uid", 0);
+        $username = session("username", "");
+        if($uid==0){
+            redirect("/manage/index/login");
+            return;
+        }
+        $this->uid = $uid;
+        $this->username = $username;
+        $this->assignData["uid"] = $uid;
+        $this->assignData["username"] = $username;
+    }
     //
     public function index(){
-        $data = array();
-        return view("manage/news/index", array("data"=>$data));
+        return view("manage/news/index", array("data"=>$this->assignData));
     }
 
     public function add(){
@@ -23,14 +37,13 @@ class NewsController extends Controller
         $cateModel = new Cate();
         $newsModel = new News();
         $id = request("id", 0);
-        $data = array();
         if($id > 0){
             $info = $newsModel->getOne($id);
-            $data["info"] = $info;
+            $this->assignData["info"] = $info;
         }
         $cate = $cateModel->getCate();
-        $data["cate"] = $cate;
-        return view("manage/news/add", array("data"=>$data));
+        $this->assignData["cate"] = $cate;
+        return view("manage/news/add", array("data"=>$this->assignData));
     }
 
     private function _doAdd(){
