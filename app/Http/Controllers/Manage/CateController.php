@@ -60,17 +60,22 @@ class CateController extends Controller
 
     //编辑
     public function add(){
-        if(!empty($_POST)){
+        $request = new Request();
+        $method = $request->method();
+        if($method=='POST'){
             $this->_doAdd();
             return;
         }
         $cateModel = new Cate();
         $id = request("id", 0);
         $data = array();
+        $cateInfo = array();
+        $cateInfo["id"] = 0;
+        $cateInfo["name"] = '';
         if($id > 0){
             $cateInfo = $cateModel->getOne($id);
-            $this->assignData["cateInfo"] = $cateInfo;
         }
+        $this->assignData["cateInfo"] = $cateInfo;
         $cate = $cateModel->getCate();
         $this->assignData["cate"] = $cate;
         return view("manage/cate/add",array("data"=>$this->assignData));

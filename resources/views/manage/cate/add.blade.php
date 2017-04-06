@@ -22,7 +22,7 @@
 
                             <div class="form-group">
                                 <label>名称</label>
-                                <input name="name" id="name" class="form-control" placeholder="" value="{{ $data['cateInfo']['name'] }}">
+                                <input name="name" id="name" class="form-control" placeholder="" value="@if(isset($data['cateInfo']['name'])){{ $data['cateInfo']['name'] }}@endif">
                             </div>
 
                             <div class="form-group">

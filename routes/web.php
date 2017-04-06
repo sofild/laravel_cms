@@ -23,4 +23,7 @@ Route::get('manage/news/data', 'Manage\NewsController@data');
 
 Route::get('manage/cate', 'Manage\CateController@index');
 Route::get('manage/cate/add/{id?}', 'Manage\CateController@add');
-Route::get('manage/cate/test', 'Manage\CateController@test');
+Route::get('manage/cate/data', 'Manage\CateController@data');
+Route::post('manage/cate/add', 'Manage\CateController@add');
+
+Route::get('manage/upload', 'Manage\UploadController@index');

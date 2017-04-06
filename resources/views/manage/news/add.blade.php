@@ -27,8 +27,16 @@
 																
 								<div class="form-group">
 									<label>主图</label>
-									<input type="file" name="pic">
-									<p class="help-block">jpg、gif、png  can be uploaded.</p>
+									<div class="col-sm-3 col-lg-5">
+										<input type="hidden" name="pic" id="pic" value="{{ $data["info"]["pic"] }}" />
+										<input type="file" name="upload" id="uploadFile" onchange="uploadImage()">
+										<p class="help-block">jpg、gif、png  can be uploaded.</p>
+									</div>
+									<div class="col-sm-9 col-lg-7" id="imgShow">
+										@if ($data["info"]["pic"]!='')
+											<img src="{{ $data['info']['pic'] }}" width="100px" height="100px" />
+										@endif
+									</div>
 								</div>
 								
 								<div class="form-group">
@@ -82,5 +90,37 @@
     <script type="text/javascript" charset="utf-8" src="/static/manage/ueditor/lang/zh-cn/zh-cn.js"></script>
     <script type="text/javascript">
     	var ue = UE.getEditor('content');
+		//文件上传
+		function uploadImage() {
+			//判断是否有选择上传文件
+			var imgPath = $("#uploadFile").val();
+			if (imgPath == "") {
+				alert("请选择上传图片！");
+				return;
+			}
+			//判断上传文件的后缀名
+			var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+			if (strExtension != 'jpg' && strExtension != 'gif'	&& strExtension != 'png' && strExtension != 'bmp') {
+				alert("请选择图片文件");
+				return;
+			}
+			$.ajax({
+				type: "POST",
+				url: "/manage/upload/upload",
+				data: { upload: $("#uploadFile").val() },
+				cache: false,
+				success: function(data) {
+					if(data.status!=1000){
+						alert(data.msg);
+						return false;
+					}
+					$("#imgShow").html('<img src="'+data.path+'" width="100px" height="100px" />');
+					$("#pic").val(data.path);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					alert("上传失败，请检查网络后重试");
+				}
+			});
+		}
     </script>
 {include file="footer" /}
