@@ -11,7 +11,7 @@ use App\Models\Cate;
 class CateTest extends TestCase
 {
     public function testModel_saveCate(){
-
+        
 
     }
 

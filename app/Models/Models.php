@@ -20,7 +20,11 @@ class Models extends Model
      * 各种花式用法，参见：\Illuminate\Database\Eloquent\Builder
      */
     function getOne($id){
-        return $this->newQuery()->where("id", $id)->first()->attributes;
+        $data = $this->newQuery()->where("id", $id)->first();
+        if(empty($data)){
+            return array();
+        }
+        return $data->attributes;
     }
 
     /*

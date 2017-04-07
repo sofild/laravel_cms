@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('manage', 'Manage\IndexController@index');
+Route::get('manage/index/test', 'Manage\IndexController@test');
 
 Route::get('manage/news', 'Manage\NewsController@index');
 Route::get('manage/news/add/{id?}', 'Manage\NewsController@add');

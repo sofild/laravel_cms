@@ -37,20 +37,47 @@ class User extends Models
      * 用户登录
      */
     public function login($username, $password){
-        return $this->newQuery()
+        $data = $this->newQuery()
             ->where("username", $username)
             ->where("password", md5($password))
-            ->first()
-            ->attributes;
+            ->first();
+        if(empty($data)){
+            return array();
+        }
+        return $data->attributes;
     }
 
     /*
      * 更新登录时间
-     * @param int $uid
+     * @param int $id
      */
     public function upLoginTime($id){
         $data = array();
         $data["logintime"] = time();
         return $this->up($data, $id);
+    }
+
+    /*
+     * 更新积分
+     * @param int $id
+     * @param int $integral
+     */
+    public function upIntegral($id, $integral){
+        if($integral==0 || $id==0){
+            return false;
+        }
+        $data = array();
+        $data["integral"] = $integral;
+        return $this->up($data, $id);
+    }
+
+    /*
+     * 获取积分
+     * @param int $id
+     * @return int
+     */
+    public function getIntegral($id){
+        $uInfo = $this->getOne($id);
+        return intval($uInfo["integral"]);
     }
 }

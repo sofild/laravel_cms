@@ -20,11 +20,14 @@ class Manager extends Models
      * @param array
      */
     public function uInfo($username, $password){
-        return $this->newQuery()
+        $data = $this->newQuery()
             ->where("username", $username)
             ->where("password", md5($password))
-            ->first()
-            ->attributes;
+            ->first();
+        if(empty($data)){
+            return array();
+        }
+        return $data->attributes;
     }
 
     /*
