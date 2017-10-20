@@ -10,13 +10,16 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+Route::get('/', 'Index\IndexController@index');
 
-Route::get('manage', 'Manage\IndexController@index');
-Route::get('manage/index/test', 'Manage\IndexController@test');
+Route::get('manage/index', 'Manage\IndexController@index');
+Route::get('manage/login', 'Manage\IndexController@login');
+Route::post('manage/dologin', 'Manage\IndexController@doLogin');
 
 Route::get('manage/news', 'Manage\NewsController@index');
 Route::get('manage/news/add/{id?}', 'Manage\NewsController@add');

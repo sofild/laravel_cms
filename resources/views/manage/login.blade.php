@@ -6,7 +6,6 @@
 <title>后台登录</title>
 
 <link href="/manage/css/bootstrap.min.css" rel="stylesheet">
-<link href="/manage/css/datepicker3.css" rel="stylesheet">
 <link href="/manage/css/styles.css" rel="stylesheet">
 
 <!--[if lt IE 9]>
@@ -18,18 +17,19 @@
 
 <body>
 	
-	<div class="row">
+	<div class="row" id="loginForm" onkeydown="enter(event)">
 		<div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4">
 			<div class="login-panel panel panel-default">
 				<div class="panel-heading">Log in</div>
 				<div class="panel-body">
-					<form role="form" name="form1" id="form1" method="post" action="/manage/index/login">
+					<form role="form" name="form1" id="form1" method="post" action="/manage/dologin">
+						{{ csrf_field() }}
 						<fieldset>
 							<div class="form-group">
-								<input class="form-control" placeholder="用户名" name="username" type="username" autofocus="">
+								<input class="form-control" placeholder="用户名" id="username" type="text" autofocus="">
 							</div>
 							<div class="form-group">
-								<input class="form-control" placeholder="密码" name="password" type="password" value="">
+								<input class="form-control" placeholder="密码" id="password" type="password" value="">
 							</div>
 							<div class="checkbox">
 								<label>
@@ -46,11 +46,6 @@
 
 	<script src="/manage/js/jquery-1.11.1.min.js"></script>
 	<script src="/manage/js/bootstrap.min.js"></script>
-	<script src="/manage/js/chart.min.js"></script>
-	<script src="/manage/js/chart-data.js"></script>
-	<script src="/manage/js/easypiechart.js"></script>
-	<script src="/manage/js/easypiechart-data.js"></script>
-	<script src="/manage/js/bootstrap-datepicker.js"></script>
 	<script>
 		!function ($) {
 			$(document).on("click","ul.nav li.parent > a > span.icon", function(){		  
@@ -70,6 +65,7 @@
 			var url = $("#form1").attr("action");
 			var username = $("#username").val();
 			var password = $("#password").val();
+			var token = $("input[name='_token']").val();
 			if(username==""){
 				alert("请输入登录用户名！");
 				return false;
@@ -78,16 +74,34 @@
 				alert("请输入登录密码！");
 				return false;
 			}
-			$.post(url,{username:username,password:password},function(data){
-				if(data.status==1000){
-					window.location.href = data.url;
-					return false;
+			$.ajax({
+				type: 'post',
+				dataType: 'json',
+				data: {username:username,password:password,_token:token},
+				url: 'http://' + document.location.host + url
+			}).done(function(resp) {
+				if (resp) {
+					if(resp.status==1000){
+						window.location.href = resp.url;
+						return false;
+					}else{
+						alert(resp.msg);
+						return false;
+					}
+				} else {
+					alert("登录失败，请重新操作！");
 				}
-				else{
-					alert(data.msg);
-					return false;
-				}
-			},"json");
+			}).fail(function(resp){
+				alert('服务器错误，请刷新页面重新操作！');
+			});
+		}
+
+		function enter(e){
+			var theEvent = e || window.event;
+			var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+			if (code == 13) {
+				login();
+			}
 		}
 	</script>	
 </body>

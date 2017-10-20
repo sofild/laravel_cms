@@ -5,38 +5,38 @@ namespace App\Http\Controllers\Manage;
 use App\Models\Manager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SysMenu;
 
 class IndexController extends Controller
 {
     //
     public function index(){
         $uid = session("uid", 0);
-        if($uid==0){
-            redirect("/manage/index/login");
-            return;
-        }
         $username = session("username", "");
-        $data = array();
-        $data["uid"] = $uid;
-        $data["username"] = $username;
-        return view("manage/index/index", array("data"=>$data));
+        if($uid == 0){
+            return redirect("manage/login");
+        }
+        //获取菜单
+        $sys_menu_model = new SysMenu();
+        $menu = $sys_menu_model->getMenus();
+        //格式化输出
+        $data = [];
+        $data["uinfo"] = ["uid" => $uid, "username" => $username];
+        $data["menu"] = $menu;
+        return view("manage/index", array("data"=>json_encode($data)));
     }
 
     /*
      * 登录
      */
     public function login(){
-        if(!empty($_POST)){
-            $this->_doLogin();
-            return;
-        }
-        return view("manage/index/login");
+        return view("manage/login");
     }
 
     /*
      * 处理登录
      */
-    private function _doLogin(){
+    public function doLogin(){
         $username = request("username", "");
         $password = request("password", "");
         $managerModel = new Manager();
@@ -45,22 +45,19 @@ class IndexController extends Controller
         if(empty($info)){
             $return["msg"] = "用户名或密码错误！";
             $return["status"] = 1001;
-            echo json_encode($return);
-            return;
+            return json_encode($return);
         }
-        session(array("uid", $info["id"]));
-        session(array("username", $username));
+        session(["uid" => $info["id"]]);
+        session(["username" => $username]);
         //更新登录时间
         $managerModel->upLoginTime($info["id"]);
         $return["msg"] = "登录成功！";
         $return["status"] = 1000;
-        $return["url"] = "/manage";
-        echo json_encode($return);
-        return;
+        $return["url"] = "/manage/index";
+        return json_encode($return);
     }
     
     public function test(){
-
         $phpExcel = new \PHPExcel();
         $phpExcel->getProperties()->setCreator("Maarten Balliauw")
             ->setLastModifiedBy("Maarten Balliauw")
