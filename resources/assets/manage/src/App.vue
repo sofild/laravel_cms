@@ -15,18 +15,19 @@
         <Row>
           <Col span="5">
           <Menu active-name="1-2" width="auto" :open-names="['1']">
-            <Submenu v-for="(s, index) in sub_menus[0]" :name="index">
+            <Submenu v-for="(s, idx) in sub_menus[0]" :name="idx">
               <template slot="title">
                 <Icon type="navicon-round"></Icon>
                 {{ s.sme_title }}
               </template>
-              <MenuItem v-for="(item, index) in sub_menus[s.sme_id]" :name="'1-'+index" @click.native="goto(item)">{{item.sme_title.length > 45 ? item.sme_title.substring(0,40)+'...' : item.sme_title}}</MenuItem>
+              <MenuItem v-for="(item, index) in sub_menus[s.sme_id]" :name="idx+'-'+index">
+                <router-link :to="{path: '/news/list/'+item.sme_id}">{{item.sme_title.length > 45 ? item.sme_title.substring(0,40)+'...' : item.sme_title}}</router-link>
+              </MenuItem>
             </Submenu>
           </Menu>
           </Col>
           <Col span="19">
-            <home v-if="template===0"></home>
-
+            <router-view></router-view>
           </Col>
         </Row>
      </div>
@@ -36,11 +37,14 @@
 <script>
 import $Msg from 'iview/src/components/message'
 import $ from 'jquery'
+import cache from 'js-cache'
 import Home from './components/Home.vue'
+import NewsList from './components/NewsList.vue'
 export default {
   name: 'app',
   components: {
-    Home
+    Home,
+    NewsList
   },
   data () {
     return {
@@ -51,12 +55,20 @@ export default {
       template: 0
     }
   },
+  beforeMount () {
+    let sm = cache.get('sub_menus')
+    console.log(sm)
+    if (sm === [] || !sm) {
+      this.$router.push('/')
+      return
+    }
+    this.sub_menus = sm
+  },
   methods: {
     getMenu: function (id) {
       this.sub_menus = this.menus[id]['child']
-    },
-    goto: function (item) {
-      this.template = item.template
+      cache.set('sub_menus', this.sub_menus, 60000)
+      console.log(cache.get('sub_menus'))
     },
     logout: function () {
       $.ajax({

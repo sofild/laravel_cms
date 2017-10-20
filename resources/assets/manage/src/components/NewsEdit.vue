@@ -1,11 +1,11 @@
 <template>
     <div class="layout-content">
-
+        fb
     </div>
 </template>
 <script>
     export default {
-      name: 'home',
+      name: 'NewsEdit',
       components: {
 
       },
