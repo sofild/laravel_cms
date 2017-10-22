@@ -11,24 +11,21 @@ class UploadController extends Controller
     public function index(){
         $request = new Request();
         if(!$request->hasFile("upload")){
-            $data["msg"] = '上传失败，请重新上传';
+            $data["msg"] = '上传失败，请重新上传1';
             $data["status"] = 1001;
-            echo json_encode($data);
-            return;
+            return json_encode($data);
         }
         $path = $this->saveFile("upload");
         $data = array();
         if($path==""){
-            $data["msg"] = '上传失败，请重新上传';
+            $data["msg"] = '上传失败，请重新上传2';
             $data["status"] = 1002;
-            echo json_encode($data);
-            return;
+            return json_encode($data);
         }
         $data["msg"] = "上传成功！";
         $data["status"] = 1000;
         $data["path"] = $path;
-        echo json_encode($data);
-        return;
+        return json_encode($data);
     }
 
     /*

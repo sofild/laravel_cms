@@ -7,12 +7,13 @@
 	<script>
 		window.DATA = {!! $data !!};
 	</script>
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 <div id="app"></div>
 <!-- built files will be auto injected -->
-<script type=text/javascript src=/dist/static/js/manifest.js></script>
-<script type=text/javascript src=/dist/static/js/vendor.js></script>
-<script type=text/javascript src=/dist/static/js/app.js></script>
+<script type=text/javascript src=/dist/static/js/manifest.js?version={{time()}}></script>
+<script type=text/javascript src=/dist/static/js/vendor.js?version={{time()}}></script>
+<script type=text/javascript src=/dist/static/js/app.js?version={{time()}}></script>
 </body>
 </html>

@@ -41,7 +41,7 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '192.168.37.170'),
+            'host' => env('DB_HOST', '192.168.0.109'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'tp5_test'),
             'username' => env('DB_USERNAME', 'root'),

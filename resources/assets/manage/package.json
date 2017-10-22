@@ -18,7 +18,8 @@
     "vue-router": "^3.0.1",
     "jquery": "^3.2.1",
     "iview": "v2.3.2",
-    "js-cache": "1.0.2"
+    "js-cookie": "^2.1.4",
+    "wangeditor": "^3.0.10"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

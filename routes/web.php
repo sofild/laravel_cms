@@ -30,4 +30,4 @@ Route::get('manage/cate/add/{id?}', 'Manage\CateController@add');
 Route::get('manage/cate/data', 'Manage\CateController@data');
 Route::post('manage/cate/add', 'Manage\CateController@add');
 
-Route::get('manage/upload', 'Manage\UploadController@index');
+Route::post('manage/upload', 'Manage\UploadController@index');

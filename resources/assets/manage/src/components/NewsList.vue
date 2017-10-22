@@ -1,8 +1,8 @@
 <template>
     <div class="layout-content">
         <Row>
-            <div class="fr">
-                <router-link to="/new/edit/0">
+            <div class="fb">
+                <router-link to="/news/edit/0">
                     <Button type="info">发布文章</Button>
                 </router-link>
             </div>
@@ -18,7 +18,6 @@
     export default {
       name: 'NewsList',
       components: {
-
       },
       data () {
         return {
@@ -125,5 +124,5 @@
     }
 </script>
 <style scoped>
- .fr{text-align:right;}
+ .fb{text-align:left; margin-bottom:10px;}
 </style>

@@ -26,7 +26,46 @@ class NewsController extends Controller
     }
     //
     public function index(){
+        if(!empty($_POST)){
+            $action = request("action","");
+            switch ($action){
+                case "get_new":
+                    return $this->_getNew();
+                    break;
+            }
+        }
         return view("manage/news/index", array("data"=>$this->assignData));
+    }
+
+    // 获取新闻信息
+    private function _getNew(){
+        $id = request("id", 0);
+        $data = [];
+        if($id == 0) {
+            $data["err"] = 1;
+            $data["msg"] = "数据异常，请刷新页面重新操作";
+            return json_encode($data);
+        }
+        $newsModel = new News();
+        $info = $newsModel->getOne($id);
+        $data["err"] = 0;
+        $data["info"] = $this->_formatNew($info);
+        return json_encode($data);
+    }
+
+    //格式化新闻信息
+    private function _formatNew($data){
+        $new = [];
+        foreach($data as $k => $v){
+            $new[$k] = $v;
+            if($k=="addtime"){
+                $new["addtime"] = date("Y-m-d H:i", $v);
+            }
+            if($k=="content"){
+                $new["content"] = htmlspecialchars_decode($v);
+            }
+        }
+        return $new;
     }
 
     public function add(){
