@@ -10,6 +10,10 @@ class UploadController extends Controller
 {
     public function index(){
         $request = new Request();
+        if ($request->file('photo')->isValid()){
+            //
+            var_dump("test"); die();
+        }
         if(!$request->hasFile("upload")){
             $data["msg"] = '上传失败，请重新上传1';
             $data["status"] = 1001;

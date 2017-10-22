@@ -13,16 +13,17 @@ class IndexController extends Controller
     public function index(){
         $uid = session("uid", 0);
         $username = session("username", "");
-        if($uid == 0){
-            return redirect("manage/login");
-        }
-        //获取菜单
-        $sys_menu_model = new SysMenu();
-        $menu = $sys_menu_model->getMenus();
-        //格式化输出
         $data = [];
-        $data["uinfo"] = ["uid" => $uid, "username" => $username];
-        $data["menu"] = $menu;
+        if($uid == 0){
+            $data["uinfo"] = [];
+        } else {
+            //获取菜单
+            $sys_menu_model = new SysMenu();
+            $menu = $sys_menu_model->getMenus();
+            //格式化输出
+            $data["uInfo"] = ["uid" => $uid, "username" => $username];
+            $data["menu"] = $menu;
+        }
         return view("manage/index", array("data"=>json_encode($data)));
     }
 
@@ -30,13 +31,6 @@ class IndexController extends Controller
      * 登录
      */
     public function login(){
-        return view("manage/login");
-    }
-
-    /*
-     * 处理登录
-     */
-    public function doLogin(){
         $username = request("username", "");
         $password = request("password", "");
         $managerModel = new Manager();

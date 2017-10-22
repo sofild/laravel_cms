@@ -18,11 +18,10 @@ Route::get('/', function () {
 Route::get('/', 'Index\IndexController@index');
 
 Route::get('manage/index', 'Manage\IndexController@index');
-Route::get('manage/login', 'Manage\IndexController@login');
-Route::post('manage/dologin', 'Manage\IndexController@doLogin');
+Route::post('manage/login', 'Manage\IndexController@login');
 
 Route::get('manage/news', 'Manage\NewsController@index');
-Route::get('manage/news/add/{id?}', 'Manage\NewsController@add');
+Route::post('manage/news/save', 'Manage\NewsController@save');
 Route::get('manage/news/data', 'Manage\NewsController@data');
 
 Route::get('manage/cate', 'Manage\CateController@index');

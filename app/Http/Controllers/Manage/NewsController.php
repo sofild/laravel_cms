@@ -24,9 +24,10 @@ class NewsController extends Controller
         $this->assignData["uid"] = $uid;
         $this->assignData["username"] = $username;
     }
+
     //
     public function index(){
-        if(!empty($_POST)){
+        if(!empty($_GET)){
             $action = request("action","");
             switch ($action){
                 case "get_new":
@@ -40,15 +41,21 @@ class NewsController extends Controller
     // 获取新闻信息
     private function _getNew(){
         $id = request("id", 0);
+        $cate_id = request("cate_id", 0);
         $data = [];
-        if($id == 0) {
-            $data["err"] = 1;
+        if($id == 0 && $cate_id == 0) {
+            $data["status"] = 1001;
             $data["msg"] = "数据异常，请刷新页面重新操作";
             return json_encode($data);
         }
         $newsModel = new News();
-        $info = $newsModel->getOne($id);
-        $data["err"] = 0;
+        if($cate_id > 0) {
+            $info = $newsModel->getByCateId($cate_id);
+        }
+        if($id > 0) {
+            $info = $newsModel->getOne($id);
+        }
+        $data["status"] = 1000;
         $data["info"] = $this->_formatNew($info);
         return json_encode($data);
     }
@@ -56,6 +63,14 @@ class NewsController extends Controller
     //格式化新闻信息
     private function _formatNew($data){
         $new = [];
+        if(empty($data)){
+            $new["title"] = '';
+            $new['description'] = '';
+            $new["pic"] = '';
+            $new["content"] = '';
+            $new["author"] = '';
+            return $new;
+        }
         foreach($data as $k => $v){
             $new[$k] = $v;
             if($k=="addtime"){
@@ -85,7 +100,7 @@ class NewsController extends Controller
         return view("manage/news/add", array("data"=>$this->assignData));
     }
 
-    private function _doAdd(){
+    public function save(){
         $title = request("title","");
         $cate_id = request("cate_id", 0);
         $description = request("description", "");
@@ -93,18 +108,18 @@ class NewsController extends Controller
         $pic = request("pic", "");
         $author = session("MANAGE_UID", 0);
         $id = request("id", 0);
-        if($title=="" || $cate_id==0){
-            back();
-            return false;
-        }
         $newsModel = new News();
         $r = $newsModel->saveNews($id,$title,$cate_id,$description,$content,$pic,$author);
+        $data = [];
         if($r){
-            redirect("/manage/news/index");
+            $data["status"] = 1000;
+            $data["msg"] = "保存成功！";
         }
         else{
-            back();
+            $data["status"] = 1001;
+            $data["msg"] = "保存失败！";
         }
+        return json_encode($data);
     }
 
     public function data(){

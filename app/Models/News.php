@@ -27,4 +27,17 @@ class News extends Models
             return $this->add($data);
         }
     }
+
+    /*
+     * 获取单条数据
+     * @param int $cate_id
+     * 各种花式用法，参见：\Illuminate\Database\Eloquent\Builder
+     */
+    function getByCateId($cate_id){
+        $data = $this->newQuery()->where("cate_id", $cate_id)->first();
+        if(empty($data)){
+            return array();
+        }
+        return $data->attributes;
+    }
 }
