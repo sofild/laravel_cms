@@ -22,7 +22,7 @@ Route::post('manage/login', 'Manage\IndexController@login');
 
 Route::get('manage/news', 'Manage\NewsController@index');
 Route::post('manage/news/save', 'Manage\NewsController@save');
-Route::get('manage/news/data', 'Manage\NewsController@data');
+Route::get('manage/news/add', 'Manage\NewsController@add');
 
 Route::get('manage/cate', 'Manage\CateController@index');
 Route::get('manage/cate/add/{id?}', 'Manage\CateController@add');

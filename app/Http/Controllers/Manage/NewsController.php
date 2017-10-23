@@ -84,20 +84,7 @@ class NewsController extends Controller
     }
 
     public function add(){
-        if(!empty($_POST)){
-            $this->_doAdd();
-            return;
-        }
-        $cateModel = new Cate();
-        $newsModel = new News();
-        $id = request("id", 0);
-        if($id > 0){
-            $info = $newsModel->getOne($id);
-            $this->assignData["info"] = $info;
-        }
-        $cate = $cateModel->getCate();
-        $this->assignData["cate"] = $cate;
-        return view("manage/news/add", array("data"=>$this->assignData));
+        return view("manage/news/add", array("data"=>["info"=>["pic"=>'']]));
     }
 
     public function save(){

@@ -60,12 +60,15 @@ export default {
     },
     methods: {
         handleSubmit () {
-            let token = $('meta[name="csrf-token"]').attr('content');
-            console.log(this.form.userName, this.form.password);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $.ajax({
 				type: 'post',
 				dataType: 'json',
-				data: {username:this.form.userName, password:this.form.password, _token:token},
+				data: {username:this.form.userName, password:this.form.password},
 				url: 'http://' + document.location.host + '/manage/login'
 			}).done( (resp) => {
 				if (resp) {
