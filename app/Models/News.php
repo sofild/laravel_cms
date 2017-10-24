@@ -40,4 +40,12 @@ class News extends Models
         }
         return $data->attributes;
     }
+
+    /*
+     * 统计数据总量
+     */
+    function getTotal($cate_id){
+        $data = $this->newQuery()->where("cate_id", $cate_id)->count();
+        return $data;
+    }
 }

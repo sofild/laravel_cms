@@ -50,10 +50,11 @@
         let path = this.$route.path
         let pathInfo = path.split('/')
         let cate_id = parseInt(pathInfo[3])
-        console.log(cate_id)
-        if (cate_id > 0) {
+        let id = parseInt(this.$route.params.id)
+        if (id > 0 || cate_id > 0) {
+          this.id = id
           this.cate_id = cate_id
-          this.getNew(0, cate_id)
+          this.getNew(id, cate_id)
         }
       },
       methods: {
@@ -102,7 +103,7 @@
             data: this.news,
             url: 'http://' + document.location.host + '/manage/news/save'
           }).done((resp) => {
-            if (resp.err === 0) {
+            if (resp.status === 1000) {
               $Msg.success(resp.msg)
             } else {
               $Msg.warning(resp.msg)
@@ -112,7 +113,11 @@
           })
         },
         reset: function () {
-
+          this.news.title = '';
+          this.news.description = '';
+          this.news.content = '';
+          this.news.author = '';
+          this.editor.txt.html('');
         }
       }
     }

@@ -21,10 +21,26 @@
 				<div class="panel panel-default">
 					<div class="panel-body">
 						<div class="col-md-12">
-							<form role="form" name="form1" id="form1" enctype="multipart/form-data" method="post" action="/manage/upload">
+							<form role="form" name="form1" id="form1" method="post" action="/manage/news/save">
 								{{ csrf_field() }}
+
+								<input type="hidden" name="cate_id" value="0" />
 								<div class="form-group">
-									<label>图片</label>
+									<label>title</label>
+									<input type="text" name="title" value="" />
+								</div>
+
+								<div class="form-group">
+									<label>description</label>
+									<textarea cols="40" rows="3" name="description"></textarea>
+								</div>
+
+								<div class="form-group">
+									<label>pic</label>
+									<input type="text" name="pic" value="/uploads/20171024/1508818165263.png" />
+								</div>
+								<!--<div class="form-group">
+									<label>pic</label>
 									<div class="col-sm-3 col-lg-5">
 										<input type="file" name="upload" id="uploadFile" onchange="uploadImage()">
 										<p class="help-block">jpg、gif、png  can be uploaded.</p>
@@ -34,6 +50,14 @@
 											<img src="{{ $data['info']['pic'] }}" width="100px" height="100px" />
 										@endif
 									</div>
+								</div>-->
+								<div class="form-group" style="height: 600px;">
+									<label>content</label>
+									<textarea name="content" id="content" style="height:450px;"></textarea>
+								</div>
+
+								<div class="form-group">
+									<input type="submit" value="submit" />
 								</div>
 						</div>
 						</form>
@@ -43,15 +67,5 @@
 		</div><!-- /.row -->
 
 	</div><!--/.main-->
-
-
-	<script type="text/javascript">
-        //文件上传
-        function uploadImage() {
-
-            $("#form1").submit();
-
-        }
-	</script>
 	</body>
 </html>

@@ -33,6 +33,9 @@ class NewsController extends Controller
                 case "get_new":
                     return $this->_getNew();
                     break;
+                case "get_list":
+                    return $this->_getList();
+                    break;
             }
         }
         return view("manage/news/index", array("data"=>$this->assignData));
@@ -83,10 +86,30 @@ class NewsController extends Controller
         return $new;
     }
 
+    // 获取新闻列表
+    private function _getList(){
+        $cate_id = request("cate_id", -1);
+        $page = request("page", 1);
+        $data = [];
+        if($cate_id < 0) {
+            $data["status"] = 1001;
+            $data["msg"] = "数据异常，请刷新页面重新操作";
+            return json_encode($data);
+        }
+        $newsModel = new News();
+        $total = $newsModel->getTotal($cate_id);
+        $info = $newsModel->getList(["cate_id = ".$cate_id.""], ["id","desc"], [($page-1) * 20, 20]);
+        $data["total"] = $total;
+        $data["status"] = 1000;
+        $data["info"] = $this->_formatList($info);
+        return json_encode($data);
+    }
+
     public function add(){
         return view("manage/news/add", array("data"=>["info"=>["pic"=>'']]));
     }
 
+    // 保存
     public function save(){
         $title = request("title","");
         $cate_id = request("cate_id", 0);
@@ -109,37 +132,20 @@ class NewsController extends Controller
         return json_encode($data);
     }
 
-    public function data(){
-        $newsModel = new News();
-        $where = array();
-        $order = array("addtime", "desc");
-        $limit = array(0,100);
-        $data = $newsModel->getList($where, $order, $limit);
-        $list = $this->_formatList($data);
-        echo json_encode($list);
-        return;
-    }
-
     /*
      * 格式化列表数据
      * @param array $data
      * @return array
      */
-    private function _formatList($data){
-        $cateIds = array();
-        foreach ($data as $k=>$v){
-            $cateIds[] = $v["cate_id"];
-        }
-        $cateModel = new Cate();
-        $cateNames = $cateModel->getCateNames($cateIds);
-        foreach($data as $k=>$v){
-            $cateId = $v["cate_id"];
-            $name = $cateNames[$cateId];
-            $time = date("Y-m-d H:i:s",$v["addtime"]);
-            $data[$k]["cate_name"] = $name;
-            $data[$k]["time"] = $time;
-            $data[$k]["imgUrl"] = '<img src="'.$v["pic"].'" width="50px" height="50px" />';
-            $data[$k]["op"] = '<a href="/manage/news/add/'.$v["id"].'">修改</a> &nbsp;&nbsp; <a href="/manage/news/del/'.$v["id"].'">删除</a>';
+    private function _formatList($info){
+        $data = [];
+        foreach($info as $k=>$v){
+            $new = [];
+            $new["title"] = $v["title"];
+            $new["description"] = $v["description"];
+            $new["addtime"] = date("Y-m-d H:i", $v["addtime"]);
+            $new["pic"] = $v["pic"];
+            $data[] = $new;
         }
         return $data;
     }

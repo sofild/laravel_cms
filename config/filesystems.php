@@ -63,6 +63,14 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'allowType' => ['image/gif', 'image/jpg', 'image/jpeg', 'image/png'],
+            'maxSize' => 2048000
+
+        ],
+
     ],
 
 ];

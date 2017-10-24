@@ -9,35 +9,42 @@ use App\Http\Controllers\Controller;
 class UploadController extends Controller
 {
     public function index(){
-        $request = new Request();
-        if(!$request->hasFile('photo')){
-            $data["msg"] = '上传失败，请重新上传1';
+        if(empty($_FILES["upload"])){
+            $data["msg"] = '上传失败，请重新上传';
             $data["status"] = 1001;
             return json_encode($data);
         }
-        $path = $this->saveFile('photo');
-        $data = array();
-        if($path==""){
-            $data["msg"] = '上传失败，请重新上传2';
+        $file = $_FILES["upload"];
+        if($file["error"] > 0){
+            $data["msg"] = '上传失败，请重新上传';
             $data["status"] = 1002;
+            return json_encode($data);
+        }
+        $uploadConf = config('filesystems.disks')["uploads"];
+        if(!in_array($file["type"], $uploadConf["allowType"])){
+            $data["msg"] = '图片类型不符';
+            $data["status"] = 1003;
+            return json_encode($data);
+        }
+        if($file["size"] > $uploadConf["maxSize"]) {
+            $data["msg"] = '文件太大';
+            $data["status"] = 1004;
+            return json_encode($data);
+        }
+        $saveFileName = time().rand(100,999).".".pathinfo($file["name"])["extension"];
+        $saveDir = date("Ymd", time());
+        if(!file_exists($uploadConf["root"]."/".$saveDir)){
+            mkdir($uploadConf["root"]."/".$saveDir);
+        }
+        $saveFile = $uploadConf["root"]."/".$saveDir."/".$saveFileName;
+        if(!move_uploaded_file($file["tmp_name"], $saveFile)){
+            $data["msg"] = '上传失败，请重新上传';
+            $data["status"] = 1005;
             return json_encode($data);
         }
         $data["msg"] = "上传成功！";
         $data["status"] = 1000;
-        $data["path"] = $path;
+        $data["path"] = "/uploads/".$saveDir."/".$saveFileName;
         return json_encode($data);
     }
-
-    /*
-     * 保存文件
-     * @param string $fieldName
-     * @param string $dir
-     * @param return
-     */
-    public function saveFile($fieldName, $dir='upload'){
-        $request = new Request();
-        $path = $request->file($fieldName)->store($dir);
-        return $path;
-    }
-
 }

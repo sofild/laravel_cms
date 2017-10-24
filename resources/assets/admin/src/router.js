@@ -60,7 +60,8 @@ export const otherRouter = {
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: resolve => { require(['./views/own-space/own-space.vue'], resolve); } },
         { path: 'ownspace/:username', title: '带参个人中心', name: 'ownspace_with_name', component: resolve => { require(['./views/own-space/own-space.vue'], resolve); } },  // 用于展示带参路由
         { path: 'order/:order_id', title: '订单详情', name: 'order_info', component: resolve => { require(['./views/argument-page/order-info.vue'], resolve); } },  // 用于展示带参路由
-        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['./views/message/message.vue'], resolve); } }
+        { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['./views/message/message.vue'], resolve); } },
+        { path: 'news/edit', title: '内容编辑', name: 'news_edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } }
     ]
 };
 

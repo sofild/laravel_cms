@@ -10,11 +10,13 @@
         <Row>
             <template>
                 <Table :columns="columns" :data="data"></Table>
+                <Page :total="total" :on-change="changePage"></Page>
             </template>
         </Row>
     </div>
 </template>
 <script>
+    import $Modal from 'iview/src/components/modal'
     export default {
       name: 'NewsList',
       components: {
@@ -23,8 +25,8 @@
         return {
           columns: [
             {
-              title: '姓名',
-              key: 'name',
+              title: '标题',
+              key: 'title',
               render: (h, params) => {
                 return h('div', [
                   h('Icon', {
@@ -37,12 +39,16 @@
               }
             },
             {
-              title: '年龄',
-              key: 'age'
+              title: '图片',
+              key: 'pic'
             },
             {
-              title: '地址',
-              key: 'address'
+              title: '描述',
+              key: 'description'
+            },
+            {
+              title: '添加时间',
+              key: 'addtime'
             },
             {
               title: '操作',
@@ -61,7 +67,7 @@
                     },
                     on: {
                       click: () => {
-                        this.show(params.index)
+                        this.edit(params.index)
                       }
                     }
                   }, '编辑'),
@@ -80,36 +86,49 @@
               }
             }
           ],
-          data: [
-            {
-              name: '王小明',
-              age: 18,
-              address: '北京市朝阳区芍药居'
-            },
-            {
-              name: '张小刚',
-              age: 25,
-              address: '北京市海淀区西二旗'
-            },
-            {
-              name: '李小红',
-              age: 31,
-              address: '上海市浦东新区世纪大道'
-            },
-            {
-              name: '周小伟',
-              age: 27,
-              address: '深圳市南山区深南大道'
-            }
-          ]
+          data: [],
+          page: 1,
+          total: 0,
+          cate_id: 0
         }
       },
+      beforeMount () {
+          let path = this.$route.path
+          let pathInfo = path.split('/')
+          let cate_id = parseInt(pathInfo[3])
+          if (cate_id > 0) {
+            this.cate_id = cate_id
+            this.getList(cate_id)
+          }
+      },
       methods: {
-        show: function (index) {
-          this.$Modal.info({
-            title: '用户信息',
-            content: `姓名：${this.data[index].name}<br>年龄：${this.data[index].age}<br>地址：${this.data[index].address}`
+        getList: function (cate_id) {
+          $.ajax({
+            type: 'get',
+            dataType: 'json',
+            data: {'action': 'get_list', cate_id: cate_id, page: this.page},
+            url: 'http://' + document.location.host + '/manage/news'
+          }).done((resp) => {
+            if (resp.status === 1000) {
+              this.data = resp.info
+              this.total = resp.total
+            } else {
+              $Msg.warning(resp.msg)
+            }
+          }).fail((resp) => {
+            this.$router.push({name:'error_500'})
           })
+        },
+        changePage(page){
+          this.page = page
+          this.getList(this.cate_id)
+        },
+        edit: function (index) {
+          var id = this.data[index]['id']
+          this.$router.push({
+              name: 'news_edit',
+              params: {id: id}
+          });
         },
         remove: function (index) {
           this.data.splice(index, 1)
