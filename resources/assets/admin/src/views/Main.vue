@@ -127,12 +127,6 @@
         },
         methods: {
             init () {
-                if (!this.wData.uInfo){
-                    this.$router.push({
-                        name: 'login'
-                    });
-                    return
-                }
                 this.$store.commit('setCurrentPageName', this.$route.name);
                 let pathArr = util.setCurrentPath(this, this.$route.name);
                 if (pathArr.length >= 2) {

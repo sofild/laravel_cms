@@ -15,7 +15,7 @@ class IndexController extends Controller
         $username = session("username", "");
         $data = [];
         if($uid == 0){
-            $data["uinfo"] = [];
+            $data["uInfo"] = [];
         } else {
             //获取菜单
             $sys_menu_model = new SysMenu();
@@ -47,7 +47,7 @@ class IndexController extends Controller
         $managerModel->upLoginTime($info["id"]);
         $return["msg"] = "登录成功！";
         $return["status"] = 1000;
-        $return["url"] = "/manage/index";
+        $return["uid"] = $info["id"];
         return json_encode($return);
     }
     

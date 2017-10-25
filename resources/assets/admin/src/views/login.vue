@@ -60,43 +60,43 @@ export default {
     },
     methods: {
         handleSubmit () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-				type: 'post',
-				dataType: 'json',
-				data: {username:this.form.userName, password:this.form.password},
-				url: 'http://' + document.location.host + '/manage/login'
-			}).done( (resp) => {
-				if (resp) {
-					if(resp.status==1000){
-						this.successHandle();
-						return true;
-					}else{
-						$Msg.error(resp.msg);
-						return false;
-					}
-				} else {
-					$Msg.error("登录失败，请重新操作！");
-				}
-			}).fail( (resp) => {
-				$Msg.error('服务器错误，请刷新页面重新操作！');
-			});
-        },
-        successHandle () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                    this.$store.commit('setAvator', '/img/admin.jpg');
-                    Cookies.set('access', 1);
-                    this.$router.push({
-                        name: 'home_index'
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
                     });
-                }
+                    $.ajax({
+                        type: 'post',
+                        dataType: 'json',
+                        data: {username:this.form.userName, password:this.form.password},
+                        url: 'http://' + document.location.host + '/manage/login'
+                    }).done( (resp) => {
+                        if (resp) {
+                            if(resp.status==1000){
+                                this.successHandle(resp);
+                                return true;
+                            }else{
+                                $Msg.error(resp.msg);
+                                return false;
+                            }
+                        } else {
+                            $Msg.error("登录失败，请重新操作！");
+                        }
+                    }).fail( (resp) => {
+                        $Msg.error('服务器错误，请刷新页面重新操作！');
+                    });
+			    }
+            });
+        },
+        successHandle (resp) {
+            Cookies.set('uid', resp.uid);
+            Cookies.set('user', this.form.userName);
+            this.$store.commit('setAvator', '/img/admin.jpg');
+            Cookies.set('access', 1);
+            this.$router.push({
+                name: 'home_index'
             });
         }
     }

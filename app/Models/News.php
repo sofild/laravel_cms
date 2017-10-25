@@ -21,11 +21,17 @@ class News extends Models
         $data["author"] = $author;
         $data["addtime"] = time();
         if($id > 0){
-            return $this->up($data, $id);
+            $r = $this->up($data, $id);
         }
         else{
-            return $this->add($data);
+            $r = $this->add($data);
         }
+        $logs = new Logs();
+        if($r){
+            unset($data["content"]);
+            $logs->log($id, $data);
+        }
+        return $r;
     }
 
     /*

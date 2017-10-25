@@ -113,7 +113,7 @@
               this.data = resp.info
               this.total = resp.total
             } else {
-              $Msg.warning(resp.msg)
+              this.$Message.error(resp.msg)
             }
           }).fail((resp) => {
             this.$router.push({name:'error_500'})
@@ -131,7 +131,23 @@
           });
         },
         remove: function (index) {
-          this.data.splice(index, 1)
+          let id = this.data[index]['id']
+          $.ajax({
+              type: 'get',
+              dataType: 'json',
+              data: {'action': 'del', id: id},
+              url: 'http://' + document.location.host + '/manage/news'
+          }).done((resp) => {
+              if (resp.status === 1000) {
+                this.$Message.success('删除成功！')
+                this.data.splice(index, 1)
+              } else {
+                this.$Message.error(resp.msg)
+              }
+          }).fail((resp) => {
+              this.$router.push({name:'error_500'})
+          })
+
         },
         release: function (id) {
           let data = {}

@@ -37,6 +37,31 @@ class Manager extends Models
     public function upLoginTime($uid){
         $data = array();
         $data["logintime"] = time();
+        $logs = new Logs();
+        $logs->log($uid, "登录");
         return $this->up($data, $uid);
+    }
+
+    /*保存信息*/
+    public function saveData($data){
+        $data = array();
+        if(isset($data["password"])){
+            $data["password"] = md5($data["password"]);
+        }
+        if($data["id"] > 0){
+            $id = $data["id"];
+            unset($data["id"]);
+            $r = $this->up($data, $id);
+        }
+        else{
+            $data["addtime"] = time();
+            $r = $this->add($data);
+            $id = 0;
+        }
+        $logs = new Logs();
+        if($r){
+            $logs->log($id, $data);
+        }
+        return $r;
     }
 }

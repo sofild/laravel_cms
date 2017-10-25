@@ -38,7 +38,7 @@ class NewsController extends Controller
                     break;
             }
         }
-        return view("manage/news/index", array("data"=>$this->assignData));
+        return;
     }
 
     // 获取新闻信息
@@ -141,6 +141,7 @@ class NewsController extends Controller
         $data = [];
         foreach($info as $k=>$v){
             $new = [];
+            $new["id"] = $v["id"];
             $new["title"] = $v["title"];
             $new["description"] = $v["description"];
             $new["addtime"] = date("Y-m-d H:i", $v["addtime"]);
@@ -148,5 +149,29 @@ class NewsController extends Controller
             $data[] = $new;
         }
         return $data;
+    }
+
+    /*
+     * 删除
+     */
+    private function _del(){
+        $id = request("id", 0);
+        $data = [];
+        if($id == 0) {
+            $data["status"] = 1001;
+            $data["msg"] = "数据异常，请刷新页面重新操作";
+            return json_encode($data);
+        }
+        $model = new Manager();
+        $r = $model->del($id);
+        if($r){
+            $data["status"] = 1000;
+            $data["msg"] = "删除成功！";
+        }
+        else{
+            $data["status"] = 1001;
+            $data["msg"] = "删除失败！";
+        }
+        return json_encode($data);
     }
 }
