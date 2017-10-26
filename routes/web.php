@@ -17,6 +17,9 @@ Route::get('/', function () {
 */
 Route::get('/', 'Index\IndexController@index');
 
+Route::get('/monitor/index', 'Index\MonitorController@index');
+
+/*后台*/
 Route::get('manage/index', 'Manage\IndexController@index');
 Route::post('manage/login', 'Manage\IndexController@login');
 
