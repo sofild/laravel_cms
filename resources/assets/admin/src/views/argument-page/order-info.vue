@@ -166,6 +166,7 @@ export default {
         }
     },
     mounted () {
+        console.log("init")
         this.init();
     },
     watch: {

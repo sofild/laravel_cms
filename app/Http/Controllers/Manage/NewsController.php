@@ -38,6 +38,17 @@ class NewsController extends Controller
                     break;
             }
         }
+        if(!empty($_POST)){
+            $action = request("action","");
+            switch ($action){
+                case "save":
+                    return $this->save();
+                    break;
+                case "add":
+                    return $this->save();
+                    break;
+            }
+        }
         return;
     }
 
@@ -105,10 +116,6 @@ class NewsController extends Controller
         return json_encode($data);
     }
 
-    public function add(){
-        return view("manage/news/add", array("data"=>["info"=>["pic"=>'']]));
-    }
-
     // 保存
     public function save(){
         $title = request("title","");
@@ -116,7 +123,7 @@ class NewsController extends Controller
         $description = request("description", "");
         $content = request("content", "");
         $pic = request("pic", "");
-        $author = session("MANAGE_UID", 0);
+        $author = request("author", "");
         $id = request("id", 0);
         $newsModel = new News();
         $r = $newsModel->saveNews($id,$title,$cate_id,$description,$content,$pic,$author);

@@ -1,0 +1,2 @@
+ALTER TABLE `news` CHANGE `author` `author` VARCHAR(50) NOT NULL DEFAULT '0' COMMENT '用户ID';
+

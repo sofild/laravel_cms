@@ -24,8 +24,7 @@ Route::get('manage/index', 'Manage\IndexController@index');
 Route::post('manage/login', 'Manage\IndexController@login');
 
 Route::get('manage/news', 'Manage\NewsController@index');
-Route::post('manage/news/save', 'Manage\NewsController@save');
-Route::get('manage/news/add', 'Manage\NewsController@add');
+Route::post('manage/news', 'Manage\NewsController@index');
 
 Route::get('manage/manager', 'Manage\ManagerController@index');
 

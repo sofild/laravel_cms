@@ -61,7 +61,8 @@ export const otherRouter = {
         { path: 'ownspace/:username', title: '带参个人中心', name: 'ownspace_with_name', component: resolve => { require(['./views/own-space/own-space.vue'], resolve); } },  // 用于展示带参路由
         { path: 'order/:order_id', title: '订单详情', name: 'order_info', component: resolve => { require(['./views/argument-page/order-info.vue'], resolve); } },  // 用于展示带参路由
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['./views/message/message.vue'], resolve); } },
-        { path: 'news/edit', title: '内容编辑', name: 'news_edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } }
+        { path: 'content/edit', title: '内容编辑', name: 'content_edit', component: resolve => { require(['./views/content/edit.vue'], resolve); } },
+        { path: 'content/add', title: '内容添加', name: 'content_add', component: resolve => { require(['./views/content/add.vue'], resolve); } }
     ]
 };
 
@@ -197,19 +198,19 @@ export const appRouter = [
         ]
     },
     {
-        path: '/news',
+        path: '/about',
         icon: 'ios-people-outline',
         name: 'about-us',
         title: '关于我们',
         component: Main,
         children: [
-            { path: 'newsEdit/1001', title: '我们介绍', name: 'introduce', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1002', title: '我们背景', name: 'partner', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1003', title: '我们结构', name: 'structure', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1004', title: '我们战略', name: 'strategy', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1005', title: '我们中心', name: 'news-center', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1006', title: '我们文化', name: 'culture', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } },
-            { path: 'newsEdit/1007', title: '加入我们', name: 'join-us', icon: 'edit', component: resolve => { require(['./views/news/news-edit.vue'], resolve); } }
+            { path: 'us', title: '我们介绍', name: 'us', icon: 'edit', component: resolve => { require(['./views/about/us.vue'], resolve); } },
+            { path: 'background', title: '我们背景', name: 'background', icon: 'edit', component: resolve => { require(['./views/about/background.vue'], resolve); } },
+            { path: 'structure', title: '我们结构', name: 'structure', icon: 'edit', component: resolve => { require(['./views/about/structure.vue'], resolve); } },
+            { path: 'strategy', title: '我们战略', name: 'strategy', icon: 'edit', component: resolve => { require(['./views/about/strategy.vue'], resolve); } },
+            { path: 'brand', title: '我们中心', name: 'brand', icon: 'edit', component: resolve => { require(['./views/about/brand.vue'], resolve); } },
+            { path: 'culture', title: '我们文化', name: 'culture', icon: 'edit', component: resolve => { require(['./views/about/culture.vue'], resolve); } },
+            { path: 'joinus', title: '加入我们', name: 'joinus', icon: 'edit', component: resolve => { require(['./views/about/joinus.vue'], resolve); } }
         ]
     },
     {
@@ -219,58 +220,58 @@ export const appRouter = [
         title: '新闻中心',
         component: Main,
         children: [
-            { path: 'newsList', title: '行业新闻', name: 'industry-news', params: {id: 2001}, icon: 'stats-bars', component: resolve => { require(['./views/news/news-list.vue'], resolve); } },
-            { path: 'newsList', title: '公司动态', name: 'company-dynamics', params: {id: 2002}, icon: 'arrow-graph-up-right', component: resolve => { require(['./views/news/news-list.vue'], resolve); } },
+            { path: 'industry-news', title: '行业新闻', name: 'industry-news', icon: 'stats-bars', component: resolve => { require(['./views/news/industry-news.vue'], resolve); } },
+            { path: 'corp-trends', title: '公司动态', name: 'corp-trends', icon: 'arrow-graph-up-right', component: resolve => { require(['./views/news/corp-trends.vue'], resolve); } },
         ]
     },
     {
-        path: '/news',
+        path: '/business',
         icon: 'ios-pulse-strong',
         name: 'business',
         title: '哈哈测试',
         component: Main,
         children: [
-            { path: 'newsEdit', title: '财富管理', name: 'dragableTable', icon: 'arrow-move', component: resolve => { require(['./views/tables/dragable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '资产管理', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '保险经纪', name: 'dragableTable', icon: 'arrow-move', component: resolve => { require(['./views/tables/dragable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '网络信贷', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '普惠金融', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '商业保理', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '海外证券', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '融资租赁', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
+            { path: 'wealth-manage', title: '财富管理', name: 'wealth-manage', icon: 'arrow-move', component: resolve => { require(['./views/business/wealth-manage.vue'], resolve); } },
+            { path: 'asset-manage', title: '资产管理', name: 'asset-manage', icon: 'edit', component: resolve => { require(['./views/business/asset-manage.vue'], resolve); } },
+            { path: 'insurance-agent', title: '保险经纪', name: 'insurance-agent', icon: 'arrow-move', component: resolve => { require(['./views/business/insurance-agent.vue'], resolve); } },
+            { path: 'network-credit', title: '网络信贷', name: 'network-credit', icon: 'edit', component: resolve => { require(['./views/business/network-credit.vue'], resolve); } },
+            { path: 'inclusive-finance', title: '普惠金融', name: 'inclusive-finance', icon: 'edit', component: resolve => { require(['./views/business/inclusive-finance.vue'], resolve); } },
+            { path: 'commercial-factoring', title: '商业保理', name: 'commercial-factoring', icon: 'edit', component: resolve => { require(['./views/business/commercial-factoring.vue'], resolve); } },
+            { path: 'overseas-securities', title: '海外证券', name: 'overseas-securities', icon: 'edit', component: resolve => { require(['./views/business/overseas-securities.vue'], resolve); } },
+            { path: 'finance-lease', title: '融资租赁', name: 'finance-lease', icon: 'edit', component: resolve => { require(['./views/business/finance-lease.vue'], resolve); } },
         ]
     },
     {
-        path: '/news',
+        path: '/research',
         icon: 'erlenmeyer-flask',
         name: 'research',
         title: '研究测试',
         component: Main,
         children: [
-            { path: 'newsList', title: '研究测试', name: 'dragableTable', icon: 'arrow-move', component: resolve => { require(['./views/tables/dragable-table.vue'], resolve); } },
-            { path: 'newsList', title: '金融知识', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
+            { path: 'research', title: '研究测试', name: 'research', icon: 'arrow-move', component: resolve => { require(['./views/research/research.vue'], resolve); } },
+            { path: 'financial-knowledge', title: '金融知识', name: 'financial-knowledge', icon: 'edit', component: resolve => { require(['./views/research/financial-knowledge.vue'], resolve); } },
         ]
     },
     {
-        path: '/news',
+        path: '/responsibility',
         icon: 'ribbon-a',
         name: 'responsibility',
         title: '责任测试',
         component: Main,
         children: [
-            { path: 'newsEdit', title: '公益活动', name: 'dragableTable', icon: 'arrow-move', component: resolve => { require(['./views/tables/dragable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '慈善赞助', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
+            { path: 'public-service', title: '公益活动', name: 'public-service', icon: 'arrow-move', component: resolve => { require(['./views/responsibility/public-service.vue'], resolve); } },
+            { path: 'charity-sponsorship', title: '慈善赞助', name: 'charity-sponsorship', icon: 'edit', component: resolve => { require(['./views/responsibility/charity-sponsorship.vue'], resolve); } },
         ]
     },
     {
-        path: '/news',
+        path: '/contactus',
         icon: 'ios-location',
-        name: 'link-us',
+        name: 'contactus',
         title: '联系我们',
         component: Main,
         children: [
-            { path: 'newsEdit', title: '北京中心', name: 'dragableTable', icon: 'arrow-move', component: resolve => { require(['./views/tables/dragable-table.vue'], resolve); } },
-            { path: 'newsEdit', title: '深圳中心', name: 'editableTable', icon: 'edit', component: resolve => { require(['./views/tables/editable-table.vue'], resolve); } },
+            { path: 'beijing', title: '北京中心', name: 'beijing', icon: 'arrow-move', component: resolve => { require(['./views/contactus/beijing.vue'], resolve); } },
+            { path: 'shenzhen', title: '深圳中心', name: 'shenzhen', icon: 'edit', component: resolve => { require(['./views/contactus/shenzhen.vue'], resolve); } },
         ]
     }
 ];

@@ -15,10 +15,10 @@ class News extends Models
         $data = array();
         $data["title"] = $title;
         $data["cate_id"] = $cate_id;
-        $data["description"] = $description;
+        $data["description"] = $description ? $description : '';
         $data["content"] = $content;
-        $data["pic"] = $pic;
-        $data["author"] = $author;
+        $data["pic"] = $pic ? $pic : '';
+        $data["author"] = $author ? $author : '';
         $data["addtime"] = time();
         if($id > 0){
             $r = $this->up($data, $id);
