@@ -36,6 +36,9 @@ class NewsController extends Controller
                 case "get_list":
                     return $this->_getList();
                     break;
+                case "del":
+                    return $this->_del();
+                    break;
             }
         }
         if(!empty($_POST)){
@@ -94,6 +97,7 @@ class NewsController extends Controller
                 $new["content"] = htmlspecialchars_decode($v);
             }
         }
+        $new["hasPic"] = empty($new["pic"]) ? 0 : 1;
         return $new;
     }
 
@@ -152,7 +156,7 @@ class NewsController extends Controller
             $new["title"] = $v["title"];
             $new["description"] = $v["description"];
             $new["addtime"] = date("Y-m-d H:i", $v["addtime"]);
-            $new["pic"] = $v["pic"];
+            $new["pic"] = !empty($v["pic"]) ? $v["pic"] : '/img/no-img.png';
             $data[] = $new;
         }
         return $data;
@@ -169,8 +173,8 @@ class NewsController extends Controller
             $data["msg"] = "数据异常，请刷新页面重新操作";
             return json_encode($data);
         }
-        $model = new Manager();
-        $r = $model->del($id);
+        $model = new News();
+        $r = $model->delNews($id);
         if($r){
             $data["status"] = 1000;
             $data["msg"] = "删除成功！";

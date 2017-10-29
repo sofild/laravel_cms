@@ -161,7 +161,7 @@
               }
               this.$Loading.finish();
           }).fail((resp) => {
-              this.$router.push({name:'error_500'})
+              this.$Message.error('获取信息失败：服务器错误')
               this.$Loading.error();
           })
 

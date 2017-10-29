@@ -68,6 +68,7 @@ export const otherRouter = {
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
+    /*
     {
         path: '/access',
         redirect: '/access/index',
@@ -197,6 +198,7 @@ export const appRouter = [
             { path: 'index', title: '错误页面', name: 'errorpage_index', component: resolve => { require(['./views/error_page/error-page.vue'], resolve); } }
         ]
     },
+    */
     {
         path: '/about',
         icon: 'ios-people-outline',
@@ -272,6 +274,17 @@ export const appRouter = [
         children: [
             { path: 'beijing', title: '北京中心', name: 'beijing', icon: 'arrow-move', component: resolve => { require(['./views/contactus/beijing.vue'], resolve); } },
             { path: 'shenzhen', title: '深圳中心', name: 'shenzhen', icon: 'edit', component: resolve => { require(['./views/contactus/shenzhen.vue'], resolve); } },
+        ]
+    },
+    {
+        path: '/settings',
+        icon: 'settings',
+        name: 'settings',
+        title: '系统管理',
+        component: Main,
+        children: [
+            { path: 'managers', title: '管理员管理', name: 'managers', icon: 'ios-people', component: resolve => { require(['./views/contactus/managers.vue'], resolve); } },
+            { path: 'setting', title: '系统设置', name: 'setting', icon: 'ios-gear', component: resolve => { require(['./views/contactus/setting.vue'], resolve); } },
         ]
     }
 ];

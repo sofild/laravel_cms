@@ -54,4 +54,16 @@ class News extends Models
         $data = $this->newQuery()->where("cate_id", $cate_id)->count();
         return $data;
     }
+
+    /*
+        删除新闻
+    */
+    function delNews($id){
+        $r = $this->del($id);
+        if($r){
+            $logs = new Logs();
+            $logs->log($id, "删除内容");
+        }
+        return $r;
+    }
 }

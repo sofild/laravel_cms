@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 export default {
     data () {
         const validePhone = (rule, value, callback) => {
@@ -146,6 +147,7 @@ export default {
             gettingIdentifyCodeBtnContent: '获取验证码'  // “获取验证码”按钮的文字
         };
     },
+
     methods: {
         getIdentifyCode () {
             this.hasGetIdentifyCode = true;
@@ -249,7 +251,29 @@ export default {
                 this.$Message.success('保存成功');
                 this.save_loading = false;
             }, 1000);
-        }
+        },
+        getInfo: function () {
+          let uid = Cookies.get('uid');
+          $.ajax({
+            type: 'get',
+            dataType: 'json',
+            data: {'action': 'uinfo', uid: uid},
+            url: 'http://' + document.location.host + '/manage/manager'
+          }).done((resp) => {
+            if (resp.status === 1000) {
+              this.news = resp.info
+              this.cate_id = this.news.cate_id
+              this.initEditor()
+            } else {
+              $Msg.warning(resp.msg)
+            }
+          }).fail((resp) => {
+            this.$router.push({name:'error_500'})
+          })
+        },
+    },
+    beforeMount () {
+        getInfo()
     },
     mounted () {
         this.init();

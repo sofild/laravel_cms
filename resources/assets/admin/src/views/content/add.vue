@@ -37,7 +37,7 @@
         return {
           news: {},
           editor: null,
-          //cate_id: 0,
+          cate: 0,
           id: 0
         }
       },
@@ -50,26 +50,21 @@
         }
       },
       beforeMount () {
-        console.log(this.cate_id)
-        let cate_id = this.cate_id > 0 ? this.cate_id : 0
-        if(cate_id===0){
-            cate_id = parseInt(this.$route.query.cate_id)
-            this.cate_id = cate_id
+        this.cate = this.cate_id > 0 ? this.cate_id : 0
+        if(this.cate === 0){
+            let cate_id = parseInt(this.$route.query.cate_id)
+            this.cate = cate_id
         }
-        this.editor = new E('#content')
-        this.editor.customConfig.uploadImgServer = '/manage/upload'
-        this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024
-        this.editor.customConfig.uploadImgParams = {
-            _token: $('meta[name="csrf-token"]').attr('content')
-        }
-        this.editor.customConfig.uploadImgParamsWithUrl = true
-        this.editor.customConfig.uploadFileName = 'upload'
-        this.editor.create()
+      },
+      mounted () {
+        this.$nextTick(function () {
+          this.initEditor()
+        })
       },
       methods: {
         uploadSuccess: function (response, file, fileList) {
-          if (response.status === 1000) {
-            this.news.pic = response.path
+          if (response.errno === 0) {
+            this.news.pic = response.data[0]
           } else {
             $Msg.error(response.msg)
           }
@@ -81,8 +76,9 @@
           }
           this.news.content = this.editor.txt.html()
           this.news.action = 'save'
-          this.news.cate_id = this.cate_id
+          this.news.cate_id = this.cate
           this.news._token = $('meta[name="csrf-token"]').attr('content')
+          console.log(this.news)
           $.ajax({
             type: 'post',
             dataType: 'json',
@@ -90,7 +86,8 @@
             url: 'http://' + document.location.host + '/manage/news'
           }).done((resp) => {
             if (resp.status === 1000) {
-              $Msg.success(resp.msg)
+              $Msg.success(resp.msg + '，可在列表页查看！')
+              this.reset()
             } else {
               $Msg.warning(resp.msg)
             }
@@ -106,7 +103,15 @@
           this.editor.txt.clear();
         },
         initEditor: function () {
-
+          this.editor = new E('#content')
+          this.editor.customConfig.uploadImgServer = '/manage/upload'
+          this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024
+          this.editor.customConfig.uploadImgParams = {
+              _token: $('meta[name="csrf-token"]').attr('content')
+          }
+          this.editor.customConfig.uploadImgParamsWithUrl = true
+          this.editor.customConfig.uploadFileName = 'upload'
+          this.editor.create()
         }
       }
     }

@@ -8,6 +8,7 @@
                 <Upload action="/manage/upload" name="upload" :headers="headers" :on-success="uploadSuccess" :format="['jpg','jpeg','png']" :max-size="2048">
                     <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                 </Upload>
+                <div class="demo-upload-list" v-if="news.hasPic===1"><img :src="news.pic" style="vertical-align: top; height: 100px;" /> <div class="demo-upload-list-cover"></div></div>
             </FormItem>
             <FormItem label="描述">
                 <Input v-model="news.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
@@ -73,9 +74,7 @@
             if (resp.status === 1000) {
               this.news = resp.info
               this.cate_id = this.news.cate_id
-              this.editor = new E('#content')
-              this.editor.create()
-              this.editor.txt.html(this.news.content)
+              this.initEditor()
             } else {
               $Msg.warning(resp.msg)
             }
@@ -84,8 +83,8 @@
           })
         },
         uploadSuccess: function (response, file, fileList) {
-          if (response.status === 1000) {
-            this.news.pic = response.path
+          if (response.errno === 0) {
+            this.news.pic = response.data[0]
           } else {
             $Msg.error(response.msg)
           }
@@ -120,6 +119,18 @@
           this.news.content = '';
           this.news.author = '';
           this.editor.txt.clear();
+        },
+        initEditor: function () {
+           this.editor = new E('#content')
+           this.editor.customConfig.uploadImgServer = '/manage/upload'
+           this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024
+           this.editor.customConfig.uploadImgParams = {
+               _token: $('meta[name="csrf-token"]').attr('content')
+           }
+           this.editor.customConfig.uploadImgParamsWithUrl = true
+           this.editor.customConfig.uploadFileName = 'upload'
+           this.editor.create()
+           this.editor.txt.html(this.news.content)
         }
       }
     }
