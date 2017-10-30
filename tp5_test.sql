@@ -1,23 +1,23 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.11
+-- version phpStudy 2014
 -- http://www.phpmyadmin.net
 --
--- Host: 192.168.0.109:3306
--- Generation Time: 2017-10-22 13:22:13
--- 服务器版本： 5.7.17-log
--- PHP Version: 7.0.6
+-- 主机: localhost
+-- 生成日期: 2017 年 10 月 30 日 09:16
+-- 服务器版本: 5.5.53
+-- PHP 版本: 5.4.45
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
--- Database: `tp5_test`
+-- 数据库: `laravel_cms`
 --
 
 -- --------------------------------------------------------
@@ -27,11 +27,12 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `cate` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父分类ID',
   `name` varchar(255) NOT NULL DEFAULT '' COMMENT '分类名称',
-  `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间'
-) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+  `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
 -- 转存表中的数据 `cate`
@@ -73,13 +74,14 @@ INSERT INTO `cate` (`id`, `parent_id`, `name`, `addtime`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `integral_log` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `source` int(5) NOT NULL DEFAULT '0' COMMENT '积分来源',
   `integral` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `note` varchar(100) NOT NULL DEFAULT '' COMMENT '说明',
   `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `userid` int(11) NOT NULL DEFAULT '0' COMMENT 'user表ID'
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+  `userid` int(11) NOT NULL DEFAULT '0' COMMENT 'user表ID',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- 转存表中的数据 `integral_log`
@@ -98,23 +100,68 @@ INSERT INTO `integral_log` (`id`, `source`, `integral`, `note`, `addtime`, `user
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `logs`
+--
+
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `addtime` int(11) NOT NULL,
+  `uid` int(11) NOT NULL COMMENT '操作人ID',
+  `tbid` int(11) NOT NULL DEFAULT '0' COMMENT '表ID',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `manager`
 --
 
 CREATE TABLE IF NOT EXISTS `manager` (
-  `id` int(5) NOT NULL,
+  `id` int(5) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(100) NOT NULL DEFAULT '' COMMENT '密码',
   `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '新增时间',
-  `logintime` int(11) NOT NULL DEFAULT '0' COMMENT '登录时间'
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `logintime` int(11) NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `grade` tinyint(1) NOT NULL DEFAULT '1' COMMENT '系统角色，等级',
+  `job` varchar(255) NOT NULL DEFAULT '' COMMENT '职务',
+  `access` tinyint(1) NOT NULL DEFAULT '0' COMMENT '权限',
+  `telphone` char(11) NOT NULL DEFAULT '' COMMENT '手机',
+  `loginip` varchar(20) NOT NULL DEFAULT '' COMMENT '登录IP',
+  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- 转存表中的数据 `manager`
 --
 
-INSERT INTO `manager` (`id`, `username`, `password`, `addtime`, `logintime`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1490692549, 1508646534);
+INSERT INTO `manager` (`id`, `username`, `password`, `addtime`, `logintime`, `grade`, `job`, `access`, `telphone`, `loginip`, `avatar`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 1490692549, 1508901908, 0, '', 0, '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `monitor`
+--
+
+CREATE TABLE IF NOT EXISTS `monitor` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time` int(11) NOT NULL DEFAULT '0' COMMENT '前台传过来的时间戳',
+  `date` int(8) NOT NULL DEFAULT '0' COMMENT '日期',
+  `ip` bigint(20) NOT NULL DEFAULT '0' COMMENT 'ip',
+  `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `url` varchar(50) NOT NULL DEFAULT '' COMMENT 'url',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- 转存表中的数据 `monitor`
+--
+
+INSERT INTO `monitor` (`id`, `time`, `date`, `ip`, `addtime`, `url`) VALUES
+(1, 1508985283, 20171026, 3232243969, 1508985624, '/');
 
 -- --------------------------------------------------------
 
@@ -123,15 +170,46 @@ INSERT INTO `manager` (`id`, `username`, `password`, `addtime`, `logintime`) VAL
 --
 
 CREATE TABLE IF NOT EXISTS `news` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '标题',
   `cate_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类ID',
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `content` longtext NOT NULL COMMENT '内容',
   `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
   `pic` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
-  `author` int(6) NOT NULL DEFAULT '0' COMMENT '用户ID'
+  `author` varchar(50) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- 转存表中的数据 `news`
+--
+
+INSERT INTO `news` (`id`, `title`, `cate_id`, `description`, `content`, `addtime`, `pic`, `author`) VALUES
+(1, 'test', 0, 'fdsafdasfdsafdsa', 'Task\r\n状态:测试中  (查看工作流)\r\n优先级: Medium\r\n解决结果: 完成\r\n影响版本: 无\r\n解决版本: 无\r\n模块: 无\r\n标签:\r\n会过旗舰店\r\nSprint: 会过旗舰店', 1508824967, '/uploads/20171024/1508818165263.png', '0');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `settings`
+--
+
+CREATE TABLE IF NOT EXISTS `settings` (
+  `key` varchar(255) NOT NULL DEFAULT '',
+  `value` mediumtext NOT NULL COMMENT '值',
+  PRIMARY KEY (`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `settings`
+--
+
+INSERT INTO `settings` (`key`, `value`) VALUES
+('title', ''),
+('description', ''),
+('icon', ''),
+('keywords', ''),
+('code', '');
 
 -- --------------------------------------------------------
 
@@ -140,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `news` (
 --
 
 CREATE TABLE IF NOT EXISTS `sys_menu` (
-  `sme_id` int(11) NOT NULL,
+  `sme_id` int(11) NOT NULL AUTO_INCREMENT,
   `sme_sm_id` int(11) NOT NULL COMMENT '模块ID',
   `sme_parent_id` int(11) NOT NULL COMMENT '父级菜单ID',
   `sme_title` varchar(255) NOT NULL DEFAULT '' COMMENT '名称',
@@ -148,8 +226,9 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
   `sme_type` smallint(1) NOT NULL DEFAULT '1' COMMENT '1：子菜单，2：功能',
   `sme_addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
   `sme_sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序，大的在前',
-  `sme_template` int(4) NOT NULL DEFAULT '0' COMMENT '模版ID'
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+  `sme_template` int(4) NOT NULL DEFAULT '0' COMMENT '模版ID',
+  PRIMARY KEY (`sme_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- 转存表中的数据 `sys_menu`
@@ -174,10 +253,11 @@ INSERT INTO `sys_menu` (`sme_id`, `sme_sm_id`, `sme_parent_id`, `sme_title`, `sm
 --
 
 CREATE TABLE IF NOT EXISTS `sys_module` (
-  `sm_id` int(11) NOT NULL,
+  `sm_id` int(11) NOT NULL AUTO_INCREMENT,
   `sm_name` varchar(255) NOT NULL DEFAULT '' COMMENT '模块名',
-  `sm_sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序，从小到大排'
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  `sm_sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序，从小到大排',
+  PRIMARY KEY (`sm_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `sys_module`
@@ -194,14 +274,15 @@ INSERT INTO `sys_module` (`sm_id`, `sm_name`, `sm_sort`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` varchar(100) NOT NULL DEFAULT '' COMMENT 'UID',
   `username` varchar(255) NOT NULL DEFAULT '' COMMENT '用户名',
   `password` varchar(255) NOT NULL DEFAULT '' COMMENT '密码',
   `addtime` int(11) NOT NULL DEFAULT '0' COMMENT '添加时间',
   `logintime` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `integral` int(11) NOT NULL DEFAULT '0' COMMENT '积分'
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+  `integral` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- 转存表中的数据 `user`
@@ -212,91 +293,6 @@ INSERT INTO `user` (`id`, `uid`, `username`, `password`, `addtime`, `logintime`,
 (2, 'e323f12c12f3446d456df', 'test', '098f6bcd4621d373cade4e832627b4f6', 1491463536, 1491463536, 0),
 (3, 'e3600ea7131c02b4adef97031393f22469a26dd0', 'sofild', 'e10adc3949ba59abbe56e057f20f883e', 1491551210, 1491551210, 100);
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `cate`
---
-ALTER TABLE `cate`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `integral_log`
---
-ALTER TABLE `integral_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `manager`
---
-ALTER TABLE `manager`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `news`
---
-ALTER TABLE `news`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `sys_menu`
---
-ALTER TABLE `sys_menu`
-  ADD PRIMARY KEY (`sme_id`);
-
---
--- Indexes for table `sys_module`
---
-ALTER TABLE `sys_module`
-  ADD PRIMARY KEY (`sm_id`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `cate`
---
-ALTER TABLE `cate`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
---
--- AUTO_INCREMENT for table `integral_log`
---
-ALTER TABLE `integral_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `manager`
---
-ALTER TABLE `manager`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `news`
---
-ALTER TABLE `news`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sys_menu`
---
-ALTER TABLE `sys_menu`
-  MODIFY `sme_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
---
--- AUTO_INCREMENT for table `sys_module`
---
-ALTER TABLE `sys_module`
-  MODIFY `sm_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
