@@ -66,7 +66,7 @@ return [
         'uploads' => [
             'driver' => 'local',
             'root' => public_path('uploads'),
-            'allowType' => ['image/gif', 'image/jpg', 'image/jpeg', 'image/png'],
+            'allowType' => ['image/gif', 'image/jpg', 'image/jpeg', 'image/png', 'image/x-icon'],
             'maxSize' => 2048000
 
         ],
