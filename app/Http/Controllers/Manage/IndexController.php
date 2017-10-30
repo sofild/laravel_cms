@@ -44,10 +44,10 @@ class IndexController extends Controller
         session(["uid" => $info["id"]]);
         session(["username" => $username]);
         //更新登录时间
-        $managerModel->upLoginTime($info["id"]);
+        $managerModel->upLogin($info["id"]);
         $return["msg"] = "登录成功！";
         $return["status"] = 1000;
-        $return["uid"] = $info["id"];
+        $return["uinfo"] = $info;
         return json_encode($return);
     }
     

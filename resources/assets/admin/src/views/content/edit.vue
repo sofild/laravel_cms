@@ -37,6 +37,7 @@
       data () {
         return {
           news: {},
+          bak: {},
           editor: null,
           //cate_id: 0,
           id: 0
@@ -73,6 +74,7 @@
           }).done((resp) => {
             if (resp.status === 1000) {
               this.news = resp.info
+              this.bak = resp.info
               this.cate_id = this.news.cate_id
               this.initEditor()
             } else {
@@ -114,11 +116,7 @@
           })
         },
         reset: function () {
-          this.news.title = '';
-          this.news.description = '';
-          this.news.content = '';
-          this.news.author = '';
-          this.editor.txt.clear();
+          this.news = this.bak
         },
         initEditor: function () {
            this.editor = new E('#content')

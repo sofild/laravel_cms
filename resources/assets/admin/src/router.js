@@ -62,7 +62,9 @@ export const otherRouter = {
         { path: 'order/:order_id', title: '订单详情', name: 'order_info', component: resolve => { require(['./views/argument-page/order-info.vue'], resolve); } },  // 用于展示带参路由
         { path: 'message', title: '消息中心', name: 'message_index', component: resolve => { require(['./views/message/message.vue'], resolve); } },
         { path: 'content/edit', title: '内容编辑', name: 'content_edit', component: resolve => { require(['./views/content/edit.vue'], resolve); } },
-        { path: 'content/add', title: '内容添加', name: 'content_add', component: resolve => { require(['./views/content/add.vue'], resolve); } }
+        { path: 'content/add', title: '内容添加', name: 'content_add', component: resolve => { require(['./views/content/add.vue'], resolve); } },
+        { path: 'manager/edit', title: '管理员信息修改', name: 'manager_edit', component: resolve => { require(['./views/manager/edit.vue'], resolve); } },
+        { path: 'manager/add', title: '管理员添加', name: 'manager_add', component: resolve => { require(['./views/manager/add.vue'], resolve); } }
     ]
 };
 
@@ -283,8 +285,8 @@ export const appRouter = [
         title: '系统管理',
         component: Main,
         children: [
-            { path: 'managers', title: '管理员管理', name: 'managers', icon: 'ios-people', component: resolve => { require(['./views/contactus/managers.vue'], resolve); } },
-            { path: 'setting', title: '系统设置', name: 'setting', icon: 'ios-gear', component: resolve => { require(['./views/contactus/setting.vue'], resolve); } },
+            { path: 'manager', title: '管理员管理', name: 'managers', access: 0, icon: 'ios-people', component: resolve => { require(['./views/manager/list.vue'], resolve); } },
+            { path: 'setting', title: '系统设置', name: 'setting', icon: 'ios-gear', component: resolve => { require(['./views/settings/setting.vue'], resolve); } },
         ]
     }
 ];

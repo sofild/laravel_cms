@@ -18,7 +18,6 @@
 <script>
     import $ from 'jquery'
     import $Modal from 'iview/src/components/modal'
-    import util from '@/libs/util';
     export default {
       name: 'List',
       components: {

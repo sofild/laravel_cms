@@ -24,26 +24,20 @@
                     </FormItem>
                     <FormItem label="用户手机：" prop="cellphone" >
                         <div style="display:inline-block;width:204px;">
-                            <Input v-model="userForm.cellphone" @on-keydown="hasChangePhone"></Input>
-                        </div>
-                        <div style="display:inline-block;position:relative;">
-                            <Button @click="getIdentifyCode" :disabled="canGetIdentifyCode">{{ gettingIdentifyCodeBtnContent }}</Button>
-                            <div class="own-space-input-identifycode-con" v-if="inputCodeVisible">
-                                <div style="background-color:white;z-index:110;margin:10px;">
-                                    <Input v-model="securityCode" placeholder="请填写短信验证码" ></Input>
-                                    <div style="margin-top:10px;text-align:right">
-                                        <Button type="ghost" @click="cancelInputCodeBox">取消</Button>
-                                        <Button type="primary" @click="submitCode" :loading="checkIdentifyCodeLoading">确定</Button>
-                                    </div>
-                                </div>
-                            </div>
+                            <Input v-model="userForm.cellphone"></Input>
                         </div>
                     </FormItem>
-                    <FormItem label="公司：">
-                        <span>{{ userForm.company }}</span>
+                    <FormItem label="头像">
+                        <Upload action="/manage/upload" name="upload" :headers="headers" :on-success="uploadSuccess" :format="['jpg','jpeg','png']" :max-size="2048">
+                            <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
+                        </Upload>
+                        <div class="demo-upload-list" v-if="manager.hasAvatar===1"><img :src="manager.avatar" style="vertical-align: top; height: 100px;" /> <div class="demo-upload-list-cover"></div></div>
                     </FormItem>
-                    <FormItem label="部门：">
-                        <span>{{ userForm.department }}</span>
+                    <FormItem label="岗位：">
+                        <span>{{ userForm.job }}</span>
+                    </FormItem>
+                    <FormItem label="系统角色：">
+                        <span>{{ userForm.gradeName }}</span>
                     </FormItem>
                     <FormItem label="登录密码：">
                         <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
@@ -99,11 +93,10 @@ export default {
             userForm: {
                 name: '',
                 cellphone: '',
-                company: '',
-                department: ''
+                job: '',
+                gradeName: ''
             },
             uid: '',  // 登录用户的userId
-            securityCode: '',  // 验证码
             phoneHasChanged: false,  // 是否编辑了手机
             save_loading: false,
             identifyError: '',  // 验证码错误
@@ -112,7 +105,6 @@ export default {
             oldPassError: '',
             identifyCodeRight: false,  // 验证码是否正确
             hasGetIdentifyCode: false,  // 是否点了获取验证码
-            canGetIdentifyCode: false,  // 是否可点获取验证码
             checkIdentifyCodeLoading: false,
             inforValidate: {
                 name: [
@@ -142,9 +134,8 @@ export default {
                     { validator: valideRePassword, trigger: 'blur' }
                 ]
             },
-            inputCodeVisible: false, // 显示填写验证码box
             initPhone: '',
-            gettingIdentifyCodeBtnContent: '获取验证码'  // “获取验证码”按钮的文字
+            manager: {}
         };
     },
 
@@ -189,19 +180,7 @@ export default {
         saveEdit () {
             this.$refs['userForm'].validate((valid) => {
                 if (valid) {
-                    if (this.phoneHasChanged && this.userForm.cellphone !== this.initPhone) {  // 手机号码修改过了而且修改之后的手机号和原来的不一样
-                        if (this.hasGetIdentifyCode) { // 判断是否点了获取验证码
-                            if (this.identifyCodeRight) {  // 判断验证码是否正确
-                                this.saveInfoAjax();
-                            } else {
-                                this.$Message.error('验证码错误，请重新输入');
-                            }
-                        } else {
-                            this.$Message.warning('请先点击获取验证码');
-                        }
-                    } else {
-                        this.saveInfoAjax();
-                    }
+                    this.saveInfoAjax();
                 }
             });
         },
@@ -211,17 +190,25 @@ export default {
         saveEditPass () {
             this.$refs['editPasswordForm'].validate((valid) => {
                 if (valid) {
+                    let uid = this.uid;
                     this.savePassLoading = true;
-                    // you can write ajax request here
+                    $.ajax({
+                        type: 'save_pass',
+                        dataType: 'json',
+                        data: {'action': 'save_info', id: uid, old_pass: this.editPasswordForm.oldPass, new_pass: this.editPasswordForm.newPass},
+                        url: 'http://' + document.location.host + '/manage/manager'
+                    }).done((resp) => {
+                        if (resp.status === 1000) {
+                          this.$Message.success('保存成功');
+                        } else {
+                          this.$Message.warning(resp.msg);
+                        }
+                        this.savePassLoading = false;
+                    }).fail((resp) => {
+                        this.$router.push({name:'error_500'})
+                    })
                 }
             });
-        },
-        init () {
-            this.userForm.name = 'Lison';
-            this.userForm.cellphone = '17712345678';
-            this.initPhone = '17712345678';
-            this.userForm.company = 'TalkingData';
-            this.userForm.department = '可视化部门';
         },
         cancelInputCodeBox () {
             this.inputCodeVisible = false;
@@ -247,23 +234,40 @@ export default {
         },
         saveInfoAjax () {
             this.save_loading = true;
-            setTimeout(() => {
-                this.$Message.success('保存成功');
+            let uid = this.uid;
+            $.ajax({
+                type: 'save_info',
+                dataType: 'json',
+                data: {'action': 'save_info', id: uid, username: this.userForm.name, telphone: this.userForm.cellphone, avatar: this.manager.avatar},
+                url: 'http://' + document.location.host + '/manage/manager'
+            }).done((resp) => {
+                if (resp.status === 1000) {
+                  this.$Message.success('保存成功');
+                } else {
+                  this.$Message.warning(resp.msg);
+                }
                 this.save_loading = false;
-            }, 1000);
+            }).fail((resp) => {
+                this.$router.push({name:'error_500'})
+            })
         },
         getInfo: function () {
           let uid = Cookies.get('uid');
           $.ajax({
             type: 'get',
             dataType: 'json',
-            data: {'action': 'uinfo', uid: uid},
+            data: {'action': 'get_info', id: uid},
             url: 'http://' + document.location.host + '/manage/manager'
           }).done((resp) => {
             if (resp.status === 1000) {
-              this.news = resp.info
-              this.cate_id = this.news.cate_id
-              this.initEditor()
+              let info = resp.info;
+              this.manager = resp.info;
+              this.uid = info.id;
+              this.userForm.name = info.username;
+              this.userForm.cellphone = info.telphone;
+              this.initPhone = info.telphone;
+              this.userForm.job = info.job;
+              this.userForm.gradeName = info.grade > 0 ? '管理员' : '超级管理员';
             } else {
               $Msg.warning(resp.msg)
             }
@@ -271,12 +275,21 @@ export default {
             this.$router.push({name:'error_500'})
           })
         },
+        uploadSuccess: function (response, file, fileList) {
+          if (response.errno === 0) {
+            this.manager.avatar = response.data[0]
+          } else {
+            $Msg.error(response.msg)
+          }
+        },
     },
     beforeMount () {
         getInfo()
     },
-    mounted () {
-        this.init();
-    }
+    computed: {
+        headers () {
+          return {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        }
+    },
 };
 </script>

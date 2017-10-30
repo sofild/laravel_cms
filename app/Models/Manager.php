@@ -34,9 +34,10 @@ class Manager extends Models
      * 更新登录时间
      * @param int $uid
      */
-    public function upLoginTime($uid){
+    public function upLogin($uid){
         $data = array();
         $data["logintime"] = time();
+        $data["loginip"] = $_SERVER["REMOTE_ADDR"];
         $logs = new Logs();
         $logs->log($uid, "登录");
         return $this->up($data, $uid);
@@ -63,5 +64,19 @@ class Manager extends Models
             $logs->log($id, $data);
         }
         return $r;
+    }
+
+    /*
+        获取相同Username，不同ID的用户
+    */
+    public function getSameUser($username, $uid){
+        $data = $this->newQuery()
+            ->where("username", $username)
+            ->where("id", "<>", $uid)
+            ->first();
+        if(empty($data)){
+            return false;
+        }
+        return true;
     }
 }
