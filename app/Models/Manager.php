@@ -24,6 +24,7 @@ class Manager extends Models
             ->where("username", $username)
             ->where("password", md5($password))
             ->first();
+        //var_dump($this->getLastSql(), md5($password));
         if(empty($data)){
             return array();
         }
@@ -45,7 +46,6 @@ class Manager extends Models
 
     /*保存信息*/
     public function saveData($data){
-        $data = array();
         if(isset($data["password"])){
             $data["password"] = md5($data["password"]);
         }

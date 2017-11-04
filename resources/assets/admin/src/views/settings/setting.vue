@@ -8,6 +8,7 @@
                 <Upload action="/manage/upload" name="upload" :headers="headers" :on-success="uploadSuccess" :format="['ico']" :max-size="512">
                     <Button type="ghost" icon="ios-cloud-upload-outline">上传ICON</Button>
                 </Upload>
+                <span v-if="hasIcon"><i class="ivu-icon ivu-icon-document"></i> {{ setting.icon }}</span>
             </FormItem>
             <FormItem label="网站描述">
                 <Input v-model="setting.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
@@ -27,8 +28,8 @@
 </template>
 <script>
     import $ from 'jquery'
-    import E from 'wangeditor'
     import $Msg from 'iview/src/components/message'
+    import Cookies from 'js-cookie'
     export default {
       name: 'Edit',
       components: {
@@ -37,13 +38,14 @@
         return {
           setting: {
             title: "",
-            ico: "",
+            icon: "",
             description: "",
             keywords: "",
             code:""
           },
           bak: {},
-          access: 0
+          access: 0,
+          hasIcon: false
         }
       },
       computed: {
@@ -66,11 +68,14 @@
             if (resp.status === 1000) {
               let setting = resp.info
               this.setting.title = setting.title
-              this.setting.ico = setting.ico
+              this.setting.icon = setting.icon
               this.setting.description = setting.description
               this.setting.keywords = setting.keywords
               this.setting.code = setting.code
               this.bak = setting
+              if(setting.icon) {
+                this.hasIcon = true
+              }
             } else {
               $Msg.warning(resp.msg)
             }
@@ -80,7 +85,8 @@
         },
         uploadSuccess: function (response, file, fileList) {
           if (response.errno === 0) {
-            this.setting.ico = response.data[0]
+            this.setting.icon = response.data[0]
+            this.hasIcon = false
           } else {
             $Msg.error(response.msg)
           }

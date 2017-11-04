@@ -41,7 +41,7 @@
                           size: 'small'
                         },
                         attrs: {
-                          src: params.row.pic, style: 'width: 40px;height: 40px;border-radius: 2px;'
+                          src: params.row.avatar, style: 'width: 40px;height: 40px;border-radius: 2px;'
                         },
                         style: {
                         },
@@ -146,7 +146,7 @@
               type: 'get',
               dataType: 'json',
               data: {'action': 'del', id: id},
-              url: 'http://' + document.location.host + '/manage/news'
+              url: 'http://' + document.location.host + '/manage/manager'
           }).done((resp) => {
               if (resp.status === 1000) {
                 this.$Message.success('删除成功！')

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Models extends Model
 {
@@ -12,6 +13,7 @@ class Models extends Model
     {
         parent::__construct($attributes);
         $this->table = $table;
+        DB::connection()->enableQueryLog(); // 开启查询日志
     }
 
     /*
@@ -127,5 +129,14 @@ class Models extends Model
             $data_s[] = $v->attributes;
         }
         return $data_s;
+    }
+
+    /*
+        获取最后执行的SQL
+    */
+    function getLastSql(){
+        $sql = DB::getQueryLog();
+        $query = end($sql);
+        return $query;
     }
 }

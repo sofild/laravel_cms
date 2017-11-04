@@ -1,22 +1,23 @@
+
 <template>
     <div class="layout-content">
         <Form :model="formRight" label-position="right" :label-width="100">
-            <FormItem label="标题">
-                <Input v-model="news.title"></Input>
+            <FormItem label="姓名">
+                <Input v-model="manager.username"></Input>
             </FormItem>
-            <FormItem label="代表图">
+            <FormItem label="密码">
+                <Input v-model="manager.password"></Input>
+            </FormItem>
+            <FormItem label="头像">
                 <Upload action="/manage/upload" name="upload" :headers="headers" :on-success="uploadSuccess" :format="['jpg','jpeg','png']" :max-size="2048">
                     <Button type="ghost" icon="ios-cloud-upload-outline">上传图片</Button>
                 </Upload>
             </FormItem>
-            <FormItem label="描述">
-                <Input v-model="news.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+            <FormItem label="手机">
+                <Input v-model="manager.telphone"></Input>
             </FormItem>
-            <FormItem label="内容">
-                <div id="content" class="content"></div>
-            </FormItem>
-            <FormItem label="作者">
-                <Input v-model="news.author"></Input>
+            <FormItem label="岗位">
+                <Input v-model="manager.job"></Input>
             </FormItem>
             <FormItem>
                 <Button type="primary" @click="save()">提交</Button>
@@ -27,7 +28,6 @@
 </template>
 <script>
     import $ from 'jquery'
-    import E from 'wangeditor'
     import $Msg from 'iview/src/components/message'
     export default {
       name: 'Edit',
@@ -35,58 +35,42 @@
       },
       data () {
         return {
-          news: {},
-          editor: null,
-          cate: 0,
-          id: 0
+          manager: {},
         }
       },
-      props:[
-        'cate_id'
-      ],
       computed: {
         headers () {
           return {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         }
       },
-      beforeMount () {
-        this.cate = this.cate_id > 0 ? this.cate_id : 0
-        if(this.cate === 0){
-            let cate_id = parseInt(this.$route.query.cate_id)
-            this.cate = cate_id
-        }
-      },
-      mounted () {
-        this.$nextTick(function () {
-          this.initEditor()
-        })
-      },
       methods: {
         uploadSuccess: function (response, file, fileList) {
           if (response.errno === 0) {
-            this.news.pic = response.data[0]
+            this.manager.avatar = response.data[0]
           } else {
             $Msg.error(response.msg)
           }
         },
         save: function () {
-          if (!this.news.title) {
-            $Msg.error('请填写标题！')
+          if (!this.manager.username) {
+            $Msg.error('请填写姓名！')
             return
           }
-          this.news.content = this.editor.txt.html()
-          this.news.action = 'save'
-          this.news.cate_id = this.cate
-          this.news._token = $('meta[name="csrf-token"]').attr('content')
-          console.log(this.news)
+          if (!this.manager.password) {
+              $Msg.error('请填写密码！')
+              return
+          }
+          this.manager.id = 0
+          this.manager.action = 'save_info'
+          this.manager._token = $('meta[name="csrf-token"]').attr('content')
           $.ajax({
             type: 'post',
             dataType: 'json',
-            data: this.news,
-            url: 'http://' + document.location.host + '/manage/news'
+            data: this.manager,
+            url: 'http://' + document.location.host + '/manage/manager'
           }).done((resp) => {
             if (resp.status === 1000) {
-              $Msg.success(resp.msg + '，可在列表页查看！')
+              $Msg.success(resp.msg)
               this.reset()
             } else {
               $Msg.warning(resp.msg)
@@ -96,23 +80,8 @@
           })
         },
         reset: function () {
-          this.news.title = '';
-          this.news.description = '';
-          this.news.content = '';
-          this.news.author = '';
-          this.editor.txt.clear();
+          this.manager = {}
         },
-        initEditor: function () {
-          this.editor = new E('#content')
-          this.editor.customConfig.uploadImgServer = '/manage/upload'
-          this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024
-          this.editor.customConfig.uploadImgParams = {
-              _token: $('meta[name="csrf-token"]').attr('content')
-          }
-          this.editor.customConfig.uploadImgParamsWithUrl = true
-          this.editor.customConfig.uploadFileName = 'upload'
-          this.editor.create()
-        }
       }
     }
 </script>

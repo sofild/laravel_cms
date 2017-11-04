@@ -8,7 +8,7 @@ class Settings extends Models
 {
     public function __construct()
     {
-        $table = "stttings";
+        $table = "settings";
         $attributes = array();
         parent::__construct($table, $attributes);
     }
@@ -27,19 +27,19 @@ class Settings extends Models
 
     /*保存信息*/
     public function saveData($data){
-        $data = $this->newQuery()->where("key", $data["key"])->first();
+        $one = $this->newQuery()->where("key", $data["key"])->first();
         $msg = '';
-        if(empty($data)){
+        $this->timestamps = false;
+        if(empty($one)){
             $msg = '添加配置:';
             $this->exists = false;
+            $r = $this->newQuery()->insert($data);
         }
         else{
             $msg = '修改配置:';
             $this->exists = true;
+            $r = $this->newQuery()->where("key", $data["key"])->update(["value"=>$data["value"]]);
         }
-        $this->fillable = array_keys($data);
-        $this->timestamps = false;
-        $r = $this->fill($data)->save();
         if($r){
             $logs = new Logs();
             $logs->log(0, $msg.json_encode($data, JSON_UNESCAPED_UNICODE));
@@ -51,12 +51,14 @@ class Settings extends Models
         保存全部
     */
     public function saveAll($data){
+        $return = true;
         $datas = $this->getAll();
         foreach($data as $k=>$v){
             if($datas[$k] != $v){
-                $this->saveData(["key"=>$k, "value"=>$v]);
+                $r = $this->saveData(["key"=>$k, "value"=>$v]);
+                $return = $return && $r;
             }
         }
-        return true;
+        return $return;
     }
 }

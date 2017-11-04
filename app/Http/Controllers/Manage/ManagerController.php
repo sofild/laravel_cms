@@ -11,18 +11,11 @@ class ManagerController extends Controller
 {
     private $uid;
     private $username;
-    private $assignData;
     public function __construct(){
         $uid = session("uid", 0);
         $username = session("username", "");
-        if($uid==0){
-            redirect("/manage/index/login");
-            return;
-        }
         $this->uid = $uid;
         $this->username = $username;
-        $this->assignData["uid"] = $uid;
-        $this->assignData["username"] = $username;
     }
 
     //
@@ -36,14 +29,14 @@ class ManagerController extends Controller
                 case "get_list":
                     return $this->_getList();
                     break;
+                case "del":
+                    return $this->_del();
+                    break;
             }
         }
         if(!empty($_POST)){
             $action = request("action","");
             switch ($action){
-                case "del":
-                    return $this->_del();
-                    break;
                 case "save_info":
                     return $this->_saveInfo();
                     break;
@@ -97,7 +90,7 @@ class ManagerController extends Controller
         }
         $password = request("password", "");
         if(!empty($password) && $password!="***"){
-            $info["password"] = md5($password);
+            $info["password"] = $password;
         }
         $info["id"] = request("id", 0);
         $model = new Manager();
@@ -126,13 +119,13 @@ class ManagerController extends Controller
         $old_pass = request("old_pass","");
         $uid = request("id", 0);
         $model = new Manager();
-        $uInfo = $this->getOne($uid);
+        $uInfo = $model->getOne($uid);
         if($uInfo["password"]!=md5($old_pass)){
             $data["status"] = 1001;
             $data["msg"] = "原密码错误！";
             return json_encode($data);
         }
-        $info["password"] = md5(request("new_pass", ""));
+        $info["password"] = request("new_pass", "");
         $info["id"] = $uid;
         $r = $model->saveData($info);
         if($r){
@@ -159,11 +152,11 @@ class ManagerController extends Controller
             $m["username"] = $v["username"];
             $m["password"] = "***";
             $m["addtime"] = date("Y-m-d H:i", $v["addtime"]);
-            $m["logintime"] = date("Y-m-d H:i", $v["logintime"]);
+            $m["logintime"] = $v["logintime"] > 0 ? date("Y-m-d H:i", $v["logintime"]) : '';
             $m["job"] = $v["job"];
             $m["telphone"] = $v["telphone"];
             $m["loginip"] = $v["loginip"];
-            $m["avatar"] = !empty($v["avatar"]) ? $v["avatar"] : '/img/no-img.png';
+            $m["avatar"] = !empty($v["avatar"]) ? $v["avatar"] : '/img/no-people.jpg';
             $data[] = $m;
         }
         return $data;

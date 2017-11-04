@@ -72,6 +72,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import $ from 'jquery'
 export default {
     data () {
         const validePhone = (rule, value, callback) => {
@@ -193,13 +194,14 @@ export default {
                     let uid = this.uid;
                     this.savePassLoading = true;
                     $.ajax({
-                        type: 'save_pass',
+                        type: 'post',
                         dataType: 'json',
-                        data: {'action': 'save_info', id: uid, old_pass: this.editPasswordForm.oldPass, new_pass: this.editPasswordForm.newPass},
+                        data: {'action': 'save_pass', id: uid, old_pass: this.editPasswordForm.oldPass, new_pass: this.editPasswordForm.newPass, _token: $('meta[name="csrf-token"]').attr('content')},
                         url: 'http://' + document.location.host + '/manage/manager'
                     }).done((resp) => {
                         if (resp.status === 1000) {
                           this.$Message.success('保存成功');
+                          this.editPasswordModal = false;
                         } else {
                           this.$Message.warning(resp.msg);
                         }
@@ -236,9 +238,9 @@ export default {
             this.save_loading = true;
             let uid = this.uid;
             $.ajax({
-                type: 'save_info',
+                type: 'post',
                 dataType: 'json',
-                data: {'action': 'save_info', id: uid, username: this.userForm.name, telphone: this.userForm.cellphone, avatar: this.manager.avatar},
+                data: {'action': 'save_info', id: uid, username: this.userForm.name, telphone: this.userForm.cellphone, avatar: this.manager.avatar, _token: $('meta[name="csrf-token"]').attr('content')},
                 url: 'http://' + document.location.host + '/manage/manager'
             }).done((resp) => {
                 if (resp.status === 1000) {
@@ -251,7 +253,7 @@ export default {
                 this.$router.push({name:'error_500'})
             })
         },
-        getInfo: function () {
+        getInfo () {
           let uid = Cookies.get('uid');
           $.ajax({
             type: 'get',
@@ -275,7 +277,7 @@ export default {
             this.$router.push({name:'error_500'})
           })
         },
-        uploadSuccess: function (response, file, fileList) {
+        uploadSuccess (response, file, fileList) {
           if (response.errno === 0) {
             this.manager.avatar = response.data[0]
           } else {
@@ -284,7 +286,7 @@ export default {
         },
     },
     beforeMount () {
-        getInfo()
+        this.getInfo()
     },
     computed: {
         headers () {

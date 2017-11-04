@@ -14,10 +14,6 @@ class SettingController extends Controller
     public function __construct(){
         $uid = session("uid", 0);
         $username = session("username", "");
-        if($uid==0){
-            redirect("/manage/index/login");
-            return;
-        }
         $this->uid = $uid;
         $this->username = $username;
         $this->assignData["uid"] = $uid;
@@ -56,15 +52,14 @@ class SettingController extends Controller
 
     // 保存
     public function save(){
-        $title = request("title","");
-        $cate_id = request("cate_id", 0);
-        $description = request("description", "");
-        $content = request("content", "");
-        $pic = request("pic", "");
-        $author = request("author", "");
-        $id = request("id", 0);
-        $newsModel = new News();
-        $r = $newsModel->saveNews($id,$title,$cate_id,$description,$content,$pic,$author);
+        $data = [];
+        $data["title"] = request("title","");
+        $data["description"] = request("description", "");
+        $data["keywords"] = request("keywords", "");
+        $data["icon"] = request("icon", "");
+        $data["code"] = request("code", "");
+        $model = new Settings();
+        $r = $model->saveAll($data);
         $data = [];
         if($r){
             $data["status"] = 1000;

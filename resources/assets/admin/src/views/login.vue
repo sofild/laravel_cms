@@ -93,8 +93,8 @@ export default {
         successHandle (resp) {
             Cookies.set('uid', resp.uinfo.id);
             Cookies.set('user', this.form.userName);
-            this.$store.commit('setAvator', resp.uinfo.avatar ? resp.uinfo.avatar : '/img/admin.jpg');
-            Cookies.set('access', this.uinfo.access);
+            this.$store.commit('setAvator', resp.uinfo.avatar ? resp.uinfo.avatar : '/img/no-people.jpg');
+            Cookies.set('access', resp.uinfo.access);
             this.$router.push({
                 name: 'home_index'
             });
